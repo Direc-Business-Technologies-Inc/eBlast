@@ -1,0 +1,18 @@
+﻿.fix {
+    position: fixed;
+    bottom: 0px;
+    left: 95%;
+}
+
+.bg-danger {
+    background-color: #f5c6cb;
+}
+
+.table-hover .bg-danger:hover {
+    background-color: #f1b0b7;
+}
+
+    .table-hover .bg-danger:hover > td,
+    .table-hover .bg-danger:hover > th {
+        background-color: #f1b0b7;
+    }

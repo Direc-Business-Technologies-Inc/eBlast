@@ -1,0 +1,2031 @@
+﻿@model DomainLayer.ViewModels.MapCreateViewModel
+
+<section class="content-header">
+    <h1>
+        Field Mapping Configuration
+    </h1>
+    <div class="row" id="map-selection">
+        <div class="register-box">
+            <div class="box">
+                <div class="register-box">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Field Mapping Option</h4>
+                    </div>
+                    <div class="register-box-body">
+                        <div class="social-auth-links text-center">
+                            <p>What data do you want to MAP?</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success pull-left" id="mdal-btn-map-file">Using Data File</button>
+                        <button type="button" class="btn btn-primary" id="mdal-btn-map-api">Using API Request</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="back-selection" hidden>
+        <div class="col-md-12">
+            <div class="box">
+                <div class="btn-group">
+                    <button class="btn btn-primary pull-left " id="btn-back-select">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<form id="map-submit" hidden>
+    <section class="content">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="box box-solid">
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group" id="field-code-formgroup">
+                                <label>Field Mapping Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-code"></i>
+                                    </div>
+                                    <input type="text" class="form-control mapcode" placeholder="Code" id="field-code" required>
+                                    <div class="input-group-addon" id="open">
+                                        <button type="button" class="btn-info fa fa-search" style="float: right;" data-toggle="modal" data-target="#modal-field"></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="field-name-formgroup">
+                                <label>Field Mapping Name:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Name" id="field-name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="field-addon-formgroup">
+                                <label>Addon Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-database"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Addon Code" id="field-addon" required>
+                                    <div class="input-group-addon" id="open">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#modal-addon"></button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="field-sap-formgroup">
+                                <label>SAP Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-server"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="SAP Code" id="field-sap" required>
+                                    <div class="input-group-addon" id="open">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#modal-sap"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Module:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-tasks"></i>
+                                    </div>
+                                    @*<input type="text" class="form-control" placeholder="Module" id="field-module">*@
+                                    <select class="form-control select2" id="field-module" style="width: 100%;" required>
+                                        @*<option data-htable="OPDN" data-rtable="PDN1">Goods Receipt</option>
+                                            <option data-htable="ORDR" data-rtable="RDR1">Sales Order</option>*@
+                                        <option data-htable="OINV" data-rtable="INV1">AR Invoice</option>
+                                        <option data-htable="ORCT" data-rtable="RCT1">Incoming Payment</option>
+                                        @*<option>Purchase Order</option>
+                                            <option>Purchase Request</option>*@
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" id="field-path-formgroup">
+                                <label>Path Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-folder-open"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Path Code" id="field-path" required>
+                                    <div class="input-group-addon">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#modal-path"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Header Worksheet:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-file-text-o"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Header Worksheet" id="field-headerworksheet">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Row Worksheet:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-file-text-o"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Row Worksheet" id="field-rowworksheet">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>File Name:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-file"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="File Name" id="field-filename">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>File Type:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-files-o"></i>
+                                    </div>
+                                    @*<input type="text" class="form-control" placeholder="File Type" id="field-filetype">*@
+                                    <select class="form-control select2" style="width: 100%;" multiple="multiple" data-placeholder="Select FileType" id="field-filetype">
+                                        <option>.xlsx</option>
+                                        <option>.xls</option>
+                                        <option>.csv</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <div class="input-group">
+
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-custom pull-right " id="field-save">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Header</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">Row</a></li>
+                        <li class="pull-right">
+
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane active" id="tab_1">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        <i class="fa fa-database"></i> Table Name :
+                                    </h3>
+                                    <input type="text" placeholder="Table Name" id="header-tablename">
+                                    <button type="button" class="btn btn-primary" style="float: right;" id="add-headerfield">New Field</button>
+                                </div>
+                                <div class="box-body">
+                                    <table id="header-table" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th></th>
+                                                <th>SAP Field</th>
+                                                <th>Addon Field</th>
+                                                <th>Data Type</th>
+                                                <th>Length</th>
+                                                <th>Required</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="header-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        <i class="fa fa-database"></i> Table Name :
+                                    </h3>
+                                    <input type="text" placeholder="Table Name" id="row-tablename">
+                                    <button type="button" class="btn btn-primary" style="float: right;" id="add-rowfield">New Field</button>
+
+                                </div>
+                                <div class="box-body">
+                                    <table id="row-table" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>SAP Field</th>
+                                                <th>Addon Field</th>
+                                                <th>Data Type</th>
+                                                <th>Length</th>
+                                                <th>Required</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="row-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</form>
+
+<form id="api-map-submit" hidden>
+    <section class="content">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="box box-solid">
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group" id="api-field-code-formgroup">
+                                <label>Field Mapping Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-code"></i>
+                                    </div>
+                                    <input type="text" class="form-control mapcode" placeholder="Code" id="api-field-code" required>
+                                    <div class="input-group-addon" id="api-open">
+                                        <button type="button" class="btn-info fa fa-search" style="float: right;" data-toggle="modal" data-target="#api-modal-field"></button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group" id="api-field-addon-formgroup">
+                                <label>Addon Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-database"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Addon Code" id="api-field-addon" required>
+                                    <div class="input-group-addon" id="api-open">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#api-modal-addon"></button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Module:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-tasks"></i>
+                                    </div>
+                                <select class="form-control select2" id="api-field-module" style="width: 100%;" required>
+                                    <!--MUST HAVE A TABLE MAINTENANCE FOR THIS-->
+                                    <option data-htable="ORDR" data-rtable="RDR1">Sales Order</option>
+                                    <option data-htable="OINV" data-rtable="INV1">AR Invoice</option>
+                                    <option data-htable="ORCT" data-rtable="RCT1">Incoming Payment</option>
+                                    <option data-htable="ORDR" data-rtable="RDR1">Item Master Data</option>
+                                </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" id="api-field-name-formgroup">
+                                <label>Field Mapping Name:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Name" id="api-field-name" required>
+                                </div>
+                            </div>
+                            <div class="form-group" id="api-field-sap-formgroup">
+                                <label>SAP Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-server"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="SAP Code" id="api-field-sap" required>
+                                    <div class="input-group-addon" id="api-open">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#api-modal-sap"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="api-field-apicode-formgroup">
+                                <label>API Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-server"></i>
+                                    </div>
+                                    <input type="text" class="form-control" maxlength="20" placeholder="API Code" id="api-field-apicode" required>
+                                    <div class="input-group-addon" id="api-open">
+                                        <button type="button" class="btn-info fa fa-hand-o-right" style="float: right;" data-toggle="modal" data-target="#api-modal-apicode"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <div class="input-group">
+
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-custom pull-right " id="api-field-save">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+
+            <div class="col-xs-12">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#api_tab_1" data-toggle="tab">Header</a></li>
+                        <li><a href="#api_tab_2" data-toggle="tab">Row</a></li>
+                        <li class="pull-right">
+
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane active" id="api_tab_1">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        <i class="fa fa-database"></i> Table Name :
+                                    </h3>
+                                    <input type="text" placeholder="Table Name" id="api-header-tablename">
+                                    <button type="button" class="btn margin btn-primary" style="float: right;" id="api-generate-hfield">AutoMap Field</button>
+                                    <button type="button" class="btn margin btn-primary" style="float: right;" id="api-add-headerfield">New Field</button>
+                                </div>
+                                <div class="box-body">
+                                    <table id="api-header-table" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>SAP Field</th>
+                                                <th>API Field</th>
+                                                <th>Data Type</th>
+                                                <th>Length</th>
+                                                <th>Default Value</th>
+                                                <th>Required</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="api-header-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="api_tab_2">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        <i class="fa fa-database"></i> Table Name :
+                                    </h3>
+                                    <input type="text" placeholder="Table Name" id="api-row-tablename">
+                                    <button type="button" class="btn margin btn-primary" style="float: right;" id="api-add-rowfield">New Field</button>
+
+                                </div>
+                                <div class="box-body">
+                                    <table id="api-row-table" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>SAP Field</th>
+                                                <th>API Field</th>
+                                                <th>Data Type</th>
+                                                <th>Length</th>
+                                                <th>Default Value</th>
+                                                <th>Required</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="api-row-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</form>
+
+<div class="modal fade" id="modal-addon">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Addon Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+
+                    <table id="AddonConfig" class="table table-bordered table-striped dt">
+                        <thead>
+                            <tr>
+
+                                <th>Code</th>
+                                <th>DB Version</th>
+                                <th>Ip Address</th>
+                                <th>Server Name</th>
+                                <th>Port</th>
+                                <th>Database Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var addon in Model.AddonCodeList)
+                            {
+                                <tr>
+                                    <td>@addon.AddonCode</td>
+                                    <td>@addon.AddonDBVersion</td>
+                                    <td>@addon.AddonIPAddress</td>
+                                    <td>@addon.AddonServerName</td>
+                                    <td>@addon.AddonPort</td>
+                                    <td>@addon.AddonDBName</td>
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-addonid="@addon.AddonId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-sap">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">SAP Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <table id="SAPConfig" class="table table-bordered table-striped dt">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>DB Version</th>
+                                <th>License Port</th>
+                                <th>Ip Address</th>
+                                <th>Version</th>
+                                <th>DB Port</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sap in Model.SAPCodeList)
+                            {
+                                <tr>
+                                    <td>@sap.SAPCode</td>
+                                    <td>@sap.SAPDBVersion</td>
+                                    <td>@sap.SAPLicensePort</td>
+                                    <td>@sap.SAPIPAddress</td>
+                                    <td>@sap.SAPVersion</td>
+                                    <td>@sap.SAPDBPort</td>
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-sapid="@sap.SAPId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-path">
+    <div class="modal-dialog modal-lg" style="width:1250px;">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Path Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <table id="PathConfig" class="table table-bordered table-striped dt">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Local Path</th>
+                                <th>Backup Path</th>
+                                <th>Remote Path</th>
+                                @*<th>FileType</th>*@
+
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var path in Model.PathCodeList)
+                            {
+                                <tr>
+                                    <td>@path.PathCode</td>
+                                    <td>@path.LocalPath</td>
+                                    <td>@path.BackupPath</td>
+                                    <td>@path.RemotePath</td>
+                                    @*<td>@path.FileType</td>*@
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-pathid="@path.PathId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-field">
+    <div class="modal-dialog modal-lg" style="width:1000px;">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Field Mapping Details</h4>
+            </div>
+            <div class="modal-body">
+                <table id="FieldConfig" class="table table-bordered table-striped table-responsive w-100 dt">
+                    <thead>
+                        <tr>
+                            <th>Field Mapping Code</th>
+                            <th>Field Mapping Name </th>
+                            <th>Addon Code</th>
+                            <th>SAP Code</th>
+                            <th>Module</th>
+                            <th>Path Code</th>
+                            @*<th>Header Worksheet</th>
+                                <th>Row Worksheet</th>*@
+                            <th>File Name</th>
+                            <th>File Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var field in Model.FieldView.Where(x => x.DataType == "DATAFILE"))
+                        {
+                            <tr>
+                                <td>@field.MapCode</td>
+                                <td>@field.MapName</td>
+                                <td>@field.AddonCode</td>
+                                <td>@field.SAPCode</td>
+                                <td>@field.ModuleName</td>
+                                <td>@field.PathCode</td>
+                                @*<td>@field.HeaderWorksheet</td>
+                                    <td>@field.RowWorksheet</td>*@
+                                <td>@field.FileName</td>
+                                <td>@field.FileType</td>
+                                <td><button class="btn-info fa fa-arrow-circle-o-right" data-mapid="@field.MapId"></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="api-modal-addon">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Addon Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+
+                    <table id="api-AddonConfig" class="table table-bordered table-striped dt">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>DB Version</th>
+                                <th>Ip Address</th>
+                                <th>Server Name</th>
+                                <th>Port</th>
+                                <th>Database Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var addon in Model.AddonCodeList)
+                            {
+                                <tr>
+                                    <td>@addon.AddonCode</td>
+                                    <td>@addon.AddonDBVersion</td>
+                                    <td>@addon.AddonIPAddress</td>
+                                    <td>@addon.AddonServerName</td>
+                                    <td>@addon.AddonPort</td>
+                                    <td>@addon.AddonDBName</td>
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-api-addonid="@addon.AddonId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="api-modal-field">
+    <div class="modal-dialog modal-lg" style="width:1000px;">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Field Mapping Details</h4>
+            </div>
+            <div class="modal-body">
+                <table id="api-FieldConfig" class="table table-bordered table-striped table-responsive w-100 dt">
+                    <thead>
+                        <tr>
+                            <th>Field Mapping Code</th>
+                            <th>Field Mapping Name </th>
+                            <th>Addon Code</th>
+                            <th>SAP Code</th>
+                            <th>Module</th>
+                            <th>Path Code</th>
+                            @*<th>Header Worksheet</th>
+                                <th>Row Worksheet</th>*@
+                            <th>File Name</th>
+                            <th>File Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var field in Model.FieldView.Where(x => x.DataType == "DATAAPI"))
+                        {
+                            <tr>
+                                <td>@field.MapCode</td>
+                                <td>@field.MapName</td>
+                                <td>@field.AddonCode</td>
+                                <td>@field.SAPCode</td>
+                                <td>@field.ModuleName</td>
+                                <td>@field.PathCode</td>
+                                @*<td>@field.HeaderWorksheet</td>
+                                    <td>@field.RowWorksheet</td>*@
+                                <td>@field.FileName</td>
+                                <td>@field.FileType</td>
+                                <td><button class="btn-info fa fa-arrow-circle-o-right" data-api-mapid="@field.MapId"></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="api-modal-sap">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">SAP Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <table id="api-SAPConfig" class="table table-bordered table-striped dt">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>DB Version</th>
+                                <th>License Port</th>
+                                <th>Ip Address</th>
+                                <th>Version</th>
+                                <th>DB Port</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sap in Model.SAPCodeList)
+                            {
+                                <tr>
+                                    <td>@sap.SAPCode</td>
+                                    <td>@sap.SAPDBVersion</td>
+                                    <td>@sap.SAPLicensePort</td>
+                                    <td>@sap.SAPIPAddress</td>
+                                    <td>@sap.SAPVersion</td>
+                                    <td>@sap.SAPDBPort</td>
+
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-api-sapid="@sap.SAPId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="api-modal-apicode">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">API Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <table id="api-APIConfig" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Code</th>
+                                <th>Method</th>
+                                <th>URL</th>
+                                <th>Key</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var apis in Model.APIView)
+                            {
+                                <tr>
+                                    <td>@apis.APIId</td>
+                                    <td>@apis.APICode</td>
+                                    <td>@apis.APIMethod</td>
+                                    <td>@apis.APIURL</td>
+                                    <td>@apis.APIKey</td>
+                                    <td><button class="btn-info fa fa-arrow-circle-o-right" data-api-apiid="@apis.APIId"></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-custom2 " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' /* optional */
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $('.select2').select2()
+        });
+    </script>
+    <script>
+        $(function () {
+            $('.dt').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true
+            });
+            $('#api-APIConfig').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'columnDefs': [
+                    {
+                        "targets": 1,
+                        "render": function (data, type, full, meta) {
+                            return "<div class='' style='word-wrap: break-word; width: 100px;'>" + data + "</div>";
+                        }
+                    },
+                    {
+                        "targets": 3,
+                        "render": function (data, type, full, meta) {
+                            return "<div class='' style='word-wrap: break-word; width: 250px;'>" + data + "</div>";
+                        }
+                    },
+                    {
+                        "targets": 4,
+                        "render": function (data, type, full, meta) {
+                            return "<div class='' style='word-wrap: break-word; width: 275px;'>" + data + "</div>";
+                        }
+                    }]
+            })
+        })
+
+    </script>
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' /* optional */
+            });
+        });
+        //field-code-formgroup field-name-formgroup field-addon-formgroup field-sap-formgroup
+        //$("#field-path").on("invalid", function (e) {
+        //    e.preventDefault();
+        //    if (!($('#field-path-formgroup').hasClass('error'))) {
+        //        $('#field-path-formgroup').append('<span class="help-block text-red">Path Code is Required</span>');
+        //    }
+        //    $('#field-path-formgroup').addClass('error');
+        //});
+        $("#field-sap").on("invalid", function (e) {
+            e.preventDefault();
+            if (!($('#field-sap-formgroup').hasClass('error'))) {
+                $('#field-sap-formgroup').append('<span class="help-block text-red">SAP Code is Required</span>');
+            }
+            $('#field-sap-formgroup').addClass('error');
+        });
+        $("#field-addon").on("invalid", function (e) {
+            e.preventDefault();
+            if (!($('#field-addon-formgroup').hasClass('error'))) {
+                $('#field-addon-formgroup').append('<span class="help-block text-red">Addon Code is Required</span>');
+            }
+            $('#field-addon-formgroup').addClass('error');
+        });
+        $("#field-code").on("invalid", function (e) {
+            e.preventDefault();
+            if (!($('#field-code-formgroup').hasClass('error'))) {
+                $('#field-code-formgroup').append('<span class="help-block text-red">Mapping Code is Required</span>');
+            }
+            $('#field-code-formgroup').addClass('error');
+        });
+        $("#field-name").on("invalid", function (e) {
+            e.preventDefault();
+            if (!($('#field-name-formgroup').hasClass('error'))) {
+                $('#field-name-formgroup').append('<span class="help-block text-red">Mapping Name is Required</span>');
+            }
+            $('#field-name-formgroup').addClass('error');
+        });
+    </script>
+
+    <script>
+        var count = 0, counth = 0;
+        var comboid = 0, rowcomboid = 0;
+        var inputid = 0, rowinputid = 0;
+        var datatypeid = 0, rowdatatypeid = 0;
+        var checkid = 0, rowcheckid = 0;
+        var lengthid = 0, rowlengthid = 0;
+        var createorupdate = 0, Mapid = 0;
+        var rowarrhanafield = [];
+        var rowarrdata = [];
+        var headarrhanafield = [];
+        var headarrdata = [];
+        var sapfield = [];
+        var rowfield = [];
+        var rowdataval = [], headdataval = [];
+        $(document)
+
+            .on('click', '#add-headerfield', function () {
+                if ($.trim($('#field-code').val()) == '') {
+                    swal('Field Mapping is empty.', 'Please input the Field Code Mapping', 'warning')
+                }
+                else if ($.trim($('#field-sap').val()) == '') {
+                    swal('Field SAP is empty.', 'Please input the Field SAP Mapping', 'warning')
+                }
+                else {
+                    counth = counth + 1;
+                    inputid = "headerinput" + counth;
+                    datatypeid = "headerdata" + counth;
+                    checkid = "headercheck" + counth;
+                    comboid = "headercombo" + counth;
+                    lengthid = "headerlength" + counth;
+                    var HanaTable = $("#field-module").val();
+                    var SAPCode = $("#field-sap").val();
+                    var arr = [];
+                    var headertable = $("#field-module").find(':selected').data('htable');
+                    var rowtable = $("#field-module").find(':selected').data('rtable');
+
+                    $.post('HanaTablePopulate', { HanaTable: HanaTable, SAPCode: SAPCode ,HeaderTable:headertable,RowTable:rowtable}).done(result => {
+                        console.log(result);
+                        var disable = "";
+                        if (createorupdate == 1 && headarrhanafield.length != 0) {
+                            disable = "disabled";
+                        }
+
+                        if (result.HeaderHanaFields != null) {
+                            $('#header-table tbody').append('<tr id="tr' + counth + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-headid = "tr' + counth + '" ></button></td>' +
+                                '<td><select class="form-control select2 headercombo" name ="' + datatypeid + '" style="width: 100%;" id="' + comboid + '"></select></td>' +
+                                '<td><input type="text" class="form-control headerinput" placeholder="Insert Field" id="' + inputid + '"></td>' +
+                                '<td><select class="form-control select2 headertype" name="' + lengthid +'" style="width: 100%;" id="' + datatypeid + '"></select></td>' +
+                                '<td> <input type="text" class="form-control headerlength" placeholder="Insert Length" id="' + lengthid + '"></td>' +
+                                '<td><input type="checkbox" class="iCheck-helper headercheck" value="unchecked" id="' + checkid + '" ' + disable + '/></</td></tr>');
+
+                            $('#' + comboid + '').addClass("select2");
+                            for (var x in result.HeaderHanaFields) {
+                                $('#' + comboid + '').append($('<option>', {
+                                    value: result.HeaderHanaFields[x].ColumnName,
+                                    text: result.HeaderHanaFields[x].ColumnName
+                                }));
+                            }
+                            for (var x in result.DataTypes) {
+                                $('#' + datatypeid + '').append($("<option/>", {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+
+                        }
+                        else {
+                            swal('Unable to connect to database.', 'Please contact Administrator to resolve the issue', 'warning')
+                        }
+                    })
+                }
+            })
+
+            .on('click', '#api-add-headerfield', function () {
+                if ($.trim($('#api-field-code').val()) == '') {
+                    swal('Field Mapping is empty.', 'Please input the Field Code Mapping', 'warning')
+                }
+                else if ($.trim($('#api-field-sap').val()) == '') {
+                    swal('API Code is empty.', 'Please select an API code', 'warning')
+                }
+                else {
+                    counth = counth + 1;
+                    inputid = "api-headerinput" + counth;
+                    datatypeid = "api-headerdata" + counth;
+                    checkid = "api-headercheck" + counth;
+                    comboid = "api-headercombo" + counth;
+                    apicombo = "api-apicombo" + counth;
+                    lengthid = "api-headerlength" + counth;
+                    defvalid = "api-headerdefval" + counth;
+                    var HanaTable = $("#api-field-module").val();
+                    var SAPCode = $("#api-field-sap").val();
+                    var APICode = $("#api-field-apicode").val();
+                    var arr = [];
+                    var headertable = $("#api-field-module").find(':selected').data('htable');
+                    var rowtable = $("#api-field-module").find(':selected').data('rtable');
+
+                    $.post('HanaTablePopulateAPI', { HanaTable: HanaTable, SAPCode: SAPCode, HeaderTable: headertable, RowTable: rowtable, APICode: APICode }).done(result => {
+                        console.log(result);
+                        var disable = "";
+                        if (createorupdate == 1 && headarrhanafield.length != 0) {
+                            disable = "disabled";
+                        }
+
+                        if (result.HeaderHanaFields != null) {
+                            $('#api-header-table tbody').append('<tr id="tr' + counth + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-api-headid = "tr' + counth + '" ></button></td>' +
+                                '<td><select class="form-control select2 api-headercombo" name ="' + datatypeid + '" style="width: 100%;" id="' + comboid + '"></select></td>' +
+                                '<td><select class="form-control select2 api-apicombo" name ="' + datatypeid + '" style="width: 100%;" id="' + apicombo + '"></select></td>' +                                
+                                '<td><select class="form-control select2 api-headertype" name="' + lengthid + '" style="width: 100%;" id="' + datatypeid + '"></select></td>' +
+                                '<td> <input type="text" class="form-control api-headerlength" placeholder="Insert Length" id="' + lengthid + '"></td>' +
+                                '<td> <input type="text" class="form-control api-headerdefval" placeholder="Insert Length" id="' + defvalid + '"></td>' +
+                                '<td><input type="checkbox" class="iCheck-helper api-headercheck" value="unchecked" id="' + checkid + '" ' + disable + '/></</td></tr>');
+
+                            $('#' + comboid + '').addClass("select2");
+                            for (var x in result.HeaderHanaFields) {
+                                $('#' + comboid + '').append($('<option>', {
+                                    value: result.HeaderHanaFields[x].ColumnName,
+                                    text: result.HeaderHanaFields[x].ColumnName
+                                }));
+                            }
+
+                            $('#' + apicombo + '').addClass("select2");
+                            for (var x in result.HeaderAPIFields) {
+                                $('#' + apicombo + '').append($('<option>', {
+                                    value: result.HeaderAPIFields[x].ColumnName,
+                                    text: result.HeaderAPIFields[x].ColumnName
+                                }));
+                            }
+
+                            for (var x in result.DataTypes) {
+                                $('#' + datatypeid + '').append($("<option/>", {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+
+                        }
+                        else {
+                            swal('Unable to connect to database.', 'Please contact Administrator to resolve the issue', 'warning')
+                        }
+                    })
+                }
+            })
+
+            .on('change', '.headercombo', function (e) {
+                var value = $(this).val();
+                var datatype = $(this).attr("name");
+                var length = $('#' + datatype + '').attr("name");
+                var HanaTable = $("#field-module").val();
+                var SAPCode = $("#field-sap").val();
+                $.post('GetDataype', { HanaTable: HanaTable, SAPCode: SAPCode ,Field: value }).done(result => {
+                    for (var x in result.HeaderDataTypes)
+                    {
+                        var type = result.HeaderDataTypes[x].DataType;
+                        if (result.HeaderDataTypes[x].DBType == "HANA")
+                        {
+                            if (type == "INTEGER") { type = "INT" }
+                            else if (type == "TINYINT") { type = "BIT" }
+                            else if (type == "DOUBLE") { type = "FLOAT" }
+                            else if (type == "BLOB") { type = "IMAGE" }
+                            else if (type == "NCLOB") { type = "TEXT" }
+                            else if (type == "TIMESTAMP") { type = "DATETIME" }
+                        }
+
+                        $('#' + datatype+'').val(type);
+                        $('#' + datatype + '').trigger('change');
+
+                        if (result.HeaderDataTypes[x].Scale == 0 || result.HeaderDataTypes[x].Scale == null)
+                        {
+                            $('#' + length + '').val(result.HeaderDataTypes[x].Length);
+                        }
+                        else
+                        {
+                            var len = result.HeaderDataTypes[x].Length - result.HeaderDataTypes[x].Scale;
+                            console.log(len);
+                            $('#' + length + '').val('' + len + ',' + result.HeaderDataTypes[x].Scale +'');
+                        }
+                    }
+                })
+            })          
+
+            .on('click', '#add-rowfield', function () {
+                count = count + 1;
+                rowinputid = "rowinput" + count;
+                rowdatatypeid = "rowdata" + count;
+                rowcheckid = "rowcheck" + count;
+                rowcomboid = "rowcombo" + count;
+                rowlengthid = "rowlength" + count;
+                var HanaTable = $("#field-module").val();
+                var SAPCode = $("#field-sap").val();
+                var arr = [];
+                var headertable = $("#field-module").find(':selected').data('htable');
+                var rowtable = $("#field-module").find(':selected').data('rtable');
+
+
+                $.post('HanaTablePopulate', { HanaTable: HanaTable, SAPCode: SAPCode,HeaderTable:headertable,RowTable:rowtable }).done(result => {
+                    var disable = "";
+                    if (createorupdate == 1 && rowarrhanafield.length != 0) {
+                        disable = "disabled";
+                    }
+
+
+                    if (result.RowHanaFields != null) {
+                        $('#row-table tbody').append('<tr id="trr' + count + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-rowid = "trr' + count + '" ></button></td>' +
+                            '<td><select class="form-control select2 rowcombo" name="' + rowdatatypeid+'" style="width: 100%;" id="' + rowcomboid + '"></select></td>' +
+                            '<td><input type="text" class="form-control rowinput" placeholder="Insert Field" id="' + rowinputid + '"></td> ' +
+                            '<td><select class="form-control select2 rowtype" name ="' + rowlengthid+'" style="width: 100%;" id="' + rowdatatypeid + '"></select></td>' +
+                            '<td><input type="text" class="form-control rowlength" placeholder="Insert Length" id="' + rowlengthid + '"></td>' +
+                            '<td><input type="checkbox" value="unchecked" class="iCheck-helper rowcheck" id="' + rowcheckid + '" '+disable+'/></</td ></tr > ');
+
+                        $('#' + rowcomboid + '').addClass("select2");
+                        for (var x in result.RowHanaFields) {
+                            $('#' + rowcomboid + '').append($('<option>', {
+                                value: result.RowHanaFields[x].ColumnName,
+                                text: result.RowHanaFields[x].ColumnName
+                            }));
+                        }
+                        for (var x in result.DataTypes) {
+                            $('#' + rowdatatypeid + '').append($("<option/>", {
+                                value: result.DataTypes[x].DataType,
+                                text: result.DataTypes[x].DataType
+                            }));
+                        }
+                    }
+                    else {
+                        swal('Unable to connect to database.', 'Please contact Administrator to resolve the issue', 'warning')
+                    }
+                })
+            })
+
+            .on('click', '#api-add-rowfield', function () {
+                count = count + 1;
+                rowinputid = "api-rowinput" + count;
+                rowdatatypeid = "api-rowdata" + count;
+                rowcheckid = "api-rowcheck" + count;
+                rowcomboid = "api-rowcombo" + count;
+                apirowcombo = "api-apirowcombo" + count;
+                rowlengthid = "api-rowlength" + count;
+                rowdefvalid = "api-rowdefval" + count;
+                var HanaTable = $("#api-field-module").val();
+                var SAPCode = $("#api-field-sap").val();
+                var arr = [];
+                var headertable = $("#api-field-module").find(':selected').data('htable');
+                var rowtable = $("#api-field-module").find(':selected').data('rtable');
+
+                $.post('HanaTablePopulateAPI', { HanaTable: HanaTable, SAPCode: SAPCode, HeaderTable: headertable, RowTable: rowtable }).done(result => {
+                    var disable = "";
+                    if (createorupdate == 1 && rowarrhanafield.length != 0) {
+                        disable = "disabled";
+                    }
+
+                    if (result.RowAPIFields != null) {
+                        $('#api-row-table tbody').append('<tr id="trr' + count + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-api-rowid = "trr' + count + '" ></button></td>' +
+                            '<td><select class="form-control select2 api-rowcombo" name="' + rowdatatypeid + '" style="width: 100%;" id="' + rowcomboid + '"></select></td>' +
+                            '<td><select class="form-control select2 api-apirowcombo" name="' + rowdatatypeid + '" style="width: 100%;" id="' + apirowcombo + '"></select></td>' +                            
+                            '<td><select class="form-control select2 api-rowtype" name ="' + rowlengthid + '" style="width: 100%;" id="' + rowdatatypeid + '"></select></td>' +
+                            '<td><input type="text" class="form-control api-rowlength" placeholder="Insert Length" id="' + rowlengthid + '"></td>' +
+                            '<td><input type="text" class="form-control api-rowdefval" placeholder="Default Value" id="' + rowdefvalid + '"></td>' +
+                            '<td><input type="checkbox" value="unchecked" class="iCheck-helper api-rowcheck" id="' + rowcheckid + '" ' + disable + '/></</td ></tr > ');
+
+                        $('#' + rowcomboid + '').addClass("select2");
+                        for (var x in result.RowHanaFields) {
+                            $('#' + rowcomboid + '').append($('<option>', {
+                                value: result.RowHanaFields[x].ColumnName,
+                                text: result.RowHanaFields[x].ColumnName
+                            }));
+                        }
+
+                        $('#' + apirowcombo + '').addClass("select2");
+                        for (var x in result.RowAPIFields) {
+                            $('#' + apirowcombo + '').append($('<option>', {
+                                value: result.RowAPIFields[x].ColumnName,
+                                text: result.RowAPIFields[x].ColumnName
+                            }));
+                        }
+                        for (var x in result.DataTypes) {
+                            $('#' + rowdatatypeid + '').append($("<option/>", {
+                                value: result.DataTypes[x].DataType,
+                                text: result.DataTypes[x].DataType
+                            }));
+                        }
+                    }
+                    else {
+                        swal('Unable to connect to database.', 'Please contact Administrator to resolve the issue', 'warning')
+                    }
+                })
+            })
+
+            .on('change', '.rowcombo', function (e) {
+                var value = $(this).val();
+                var datatype = $(this).attr("name");
+                var length = $('#' + datatype + '').attr("name");
+                var HanaTable = $("#field-module").val();
+                var SAPCode = $("#field-sap").val();
+                $.post('GetDataype', { HanaTable: HanaTable, SAPCode: SAPCode, Field: value }).done(result => {
+                    for (var x in result.RowDataTypes) {
+                        var type = result.RowDataTypes[x].DataType;
+                        if (result.RowDataTypes[x].DBType == "HANA") {
+                            if (type == "INTEGER") { type = "INT" }
+                            else if (type == "TINYINT") { type = "BIT" }
+                            else if (type == "DOUBLE") { type = "FLOAT" }
+                            else if (type == "BLOB") { type = "IMAGE" }
+                            else if (type == "NCLOB") { type = "TEXT" }
+                            else if (type == "TIMESTAMP") { type = "DATETIME" }
+                        }
+
+                        $('#' + datatype + '').val(type);
+                        $('#' + datatype + '').trigger('change');
+
+                        if (result.RowDataTypes[x].Scale == 0 || result.RowDataTypes[x].Scale == null) {
+                            $('#' + length + '').val(result.RowDataTypes[x].Length);
+                        }
+                        else {
+                            var len = result.RowDataTypes[x].Length - result.RowDataTypes[x].Scale;
+                            console.log(len);
+                            $('#' + length + '').val('' + len + ',' + result.RowDataTypes[x].Scale + '');
+                        }
+                    }
+                })
+            })
+
+            .on('click', 'button[data-addonid]', function () {
+                var id = $(this).data('addonid');
+                console.log(id)
+                $.post('FindAddon', { Id: id }).done(result => {
+                    for (var x in result.AddonView) {
+                        $('#field-addon').val(result.AddonView[x].AddonCode);
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-api-addonid]', function () {
+                var id = $(this).data('api-addonid');
+                $.post('FindAddon', { Id: id }).done(result => {
+                    for (var x in result.AddonView) {
+                        $('#api-field-addon').val(result.AddonView[x].AddonCode);
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-sapid]', function () {
+                var id = $(this).data('sapid');
+                console.log(id)
+                $.post('FindSAP', { Id: id }).done(result => {
+
+                    for (var x in result.SAPView) {
+                        $('#field-sap').val(result.SAPView[x].SAPCode);
+
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-api-sapid]', function () {
+                var id = $(this).data('api-sapid');
+                console.log(id)
+                $.post('FindSAP', { Id: id }).done(result => {
+
+                    for (var x in result.SAPView) {
+                        $('#api-field-sap').val(result.SAPView[x].SAPCode);
+
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-api-apiid]', function () {
+                var id = $(this).data('api-apiid');
+                console.log(id)
+                $.post('FindAPI', { Id: id }).done(result => {
+                    if (result.APIView.length > 0) {
+                        $('#api-field-apicode').val(result.APIView[0].APICode);
+                        $('#api-field-module').val(result.APIView[0].APIModule);
+                        $('#api-field-module').trigger('change');
+
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-pathid]', function () {
+                var id = $(this).data('pathid');
+                console.log(id)
+                $.post('FindPath', { Id: id }).done(result => {
+
+                    for (var x in result.PathView) {
+                        $('#field-path').val(result.PathView[x].PathCode);
+
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-mapid]', function () {
+                createorupdate = 1;
+                var id = $(this).data('mapid');
+                Mapid = id;
+
+                //for row
+                count = 0;
+                rowinputid = 0;
+                rowdatatypeid = 0;
+                rowcheckid = 0;
+                rowcomboid = 0;
+                rowlengthid = 0;
+                counth = 0;
+                inputid = 0;
+                datatypeid = 0;
+                checkid = 0;
+                comboid = 0;
+                lengthid = 0;
+                var HanaTable = "";
+                var SAPCode = "";
+                rowarrhanafield = [];
+                rowarrdata = [];
+                headarrhanafield = [];
+                headarrdata = [];
+                headdataval = [], rowdataval = [], sapfield = [], rowsapfield = [];
+                $('#row-tablename').val("");
+                $('#header-tablename').val("");
+                $('#row-table tbody').html("");
+                $('#header-table tbody').html("");
+                console.log(createorupdate)
+                $.post('FindMap', { Id: id }).done(result => {
+                    console.log(result);
+                    for (var x in result.FieldView) {
+                        var type = result.FieldView[x].FileType;
+                        var arr = type.split(",");
+                        $('#field-code').val(result.FieldView[x].MapCode);
+                        $('#field-name').val(result.FieldView[x].MapName);
+                        $('#field-addon').val(result.FieldView[x].AddonCode);
+                        $('#field-sap').val(result.FieldView[x].SAPCode);
+                        $('#field-path').val(result.FieldView[x].PathCode);
+                        $('#field-headerworksheet').val(result.FieldView[x].HeaderWorksheet);
+                        $('#field-rowworksheet').val(result.FieldView[x].RowWorksheet);
+                        $('#field-filename').val(result.FieldView[x].FileName);
+                        $('#field-filetype').val(arr);
+                        $('#field-filetype').trigger('change');
+                        $('#field-module').val(result.FieldView[x].ModuleName);
+
+                        HanaTable = $("#field-module").val();
+                        SAPCode = $("#field-sap").val();
+
+                    }
+                    var headertable = $("#field-module").find(':selected').data('htable');
+                    var rowtable = $("#field-module").find(':selected').data('rtable');
+                    console.log(headarrhanafield);
+                    for (var x in result.Rows) {
+
+                        var req = result.Rows[x].IsRequired;
+                        var len = result.Rows[x].Length;
+                        var field = result.Rows[x].AddonRowField;
+                        rowsapfield.push(result.Rows[x].SAPRowFieldId);
+                        rowdataval.push(result.Rows[x].DataType);
+                        $('#row-tablename').val(result.Rows[0].TableName);
+                        count = count + 1;
+                        rowinputid = "rowinput" + count;
+                        rowdatatypeid = "rowdata" + count;
+                        rowcheckid = "rowcheck" + count;
+                        rowcomboid = "rowcombo" + count;
+                        rowlengthid = "rowlength" + count;
+
+                        var ischeck = "";
+                        if (req == true) {
+                            ischeck = "checked"
+                        }
+                        else {
+                            ischeck = "unchecked"
+                        }
+                        $('#row-table tbody').append('<tr id="trr' + count + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-rowid = "trr' + count + '" ></button></td>' +
+                            '<td><select class="form-control select2 rowcombo" style="width: 100%;" id="' + rowcomboid + '"></select></td>' +
+                            '<td><input type="text" class="form-control rowinput" placeholder="Insert Field" id="' + rowinputid + '" value = "' + field + '" ></td> ' +
+                            '<td><select class="form-control select2 rowtype" style="width: 100%;" id="' + rowdatatypeid + '" ></select></td>' +
+                            '<td><input type="text" class="form-control rowlength" placeholder="Insert Length" id="' + rowlengthid + '" value = "' + len + '" ></td>' +
+                            '<td><input type="checkbox" class="iCheck-helper rowcheck" id="' + rowcheckid + '" ' + ischeck + ' /></</td ></tr > ');
+
+                        $('#' + rowcomboid + '').addClass("select2");
+
+                        rowarrhanafield.push(rowcomboid);
+                        rowarrdata.push(rowdatatypeid);
+                    }
+
+                    for (var x in result.Headers) {
+                        var req = result.Headers[x].IsRequired;
+                        var len = result.Headers[x].Length;
+                        sapfield.push(result.Headers[x].SAPHeaderFieldId);
+                        var field = result.Headers[x].AddonHeaderField;
+                        headdataval.push(result.Headers[x].DataType);
+                        $('#header-tablename').val(result.Headers[0].TableName);
+                        counth = counth + 1;
+                        inputid = "headerinput" + counth;
+                        datatypeid = "headerdata" + counth;
+                        checkid = "headercheck" + counth;
+                        comboid = "headercombo" + counth;
+                        lengthid = "headerlength" + counth;
+                        var ischeck = "";
+                        if (req == true) {
+                            ischeck = "checked"
+                        }
+                        else {
+                            ischeck = "unchecked"
+                        }
+                        $('#header-table tbody').append('<tr id="tr' + counth + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-headid = "tr' + counth + '"></button></td>' +
+                            '<td><select class="form-control select2 headercombo" style="width: 100%;" id="' + comboid + '"></select></td>' +
+                            '<td><input type="text" class="form-control headerinput" placeholder="Insert Field" id="' + inputid + '" value = "' + field + '"></td>' +
+                            '<td><select class="form-control select2 headertype" style="width: 100%;" id="' + datatypeid + '"></select></td>' +
+                            '<td> <input type="text" class="form-control headerlength" placeholder="Insert Length" id="' + lengthid + '" value = "' + len + '"></td>' +
+                            '<td><input type="checkbox" class="iCheck-helper headercheck" id="' + checkid + '" ' + ischeck + ' /></</td></tr>');
+
+                        $('#' + comboid + '').addClass("select2");
+
+                        headarrhanafield.push(comboid);
+                        headarrdata.push(datatypeid);
+                        console.log(headarrhanafield);
+                    }
+
+                    $.post('HanaTablePopulate', { HanaTable: HanaTable, SAPCode: SAPCode ,HeaderTable:headertable,RowTable:rowtable}).done(result => {
+
+                        for (var i = 0; i < headarrhanafield.length; i++) {
+
+                            for (var x in result.HeaderHanaFields) {
+                                $('#' + headarrhanafield[i] + '').append($('<option>', {
+                                    value: result.HeaderHanaFields[x].ColumnName,
+                                    text: result.HeaderHanaFields[x].ColumnName
+                                }));
+                            }
+                            $('#' + headarrhanafield[i] + '').val(sapfield[i]);
+                            $('#' + headarrhanafield[i] + '').trigger('change');
+                        }
+
+                        for (var i = 0; i < headarrdata.length; i++) {
+                            for (var x in result.DataTypes) {
+                                $('#' + headarrdata[i] + '').append($('<option>', {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+                            $('#' + headarrdata[i] + '').val(headdataval[i]);
+                            $('#' + headarrdata[i] + '').trigger('change');
+                        }
+
+                        for (var i = 0; i < rowarrhanafield.length; i++) {
+
+                            for (var x in result.RowHanaFields) {
+                                $('#' + rowarrhanafield[i] + '').append($('<option>', {
+                                    value: result.RowHanaFields[x].ColumnName,
+                                    text: result.RowHanaFields[x].ColumnName
+                                }));
+                            }
+                            $('#' + rowarrhanafield[i] + '').val(rowsapfield[i]);
+                            $('#' + rowarrhanafield[i] + '').trigger('change');
+                        }
+
+                        for (var i = 0; i < rowarrdata.length; i++) {
+
+                            for (var x in result.DataTypes) {
+                                $('#' + rowarrdata[i] + '').append($('<option>', {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+                            $('#' + rowarrdata[i] + '').val(rowdataval[i]);
+                            $('#' + rowarrdata[i] + '').trigger('change');
+                        }
+
+                    })
+                    //add mapping
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-api-mapid]', function () {
+                createorupdate = 1;
+                var id = $(this).data('api-mapid');
+                Mapid = id;
+
+                //for row
+                count = 0;
+                rowinputid = 0;
+                rowdatatypeid = 0;
+                rowcheckid = 0;
+                rowcomboid = 0;
+                rowlengthid = 0;
+                counth = 0;
+                inputid = 0;
+                datatypeid = 0;
+                checkid = 0;
+                comboid = 0;
+                lengthid = 0;
+                var HanaTable = "";
+                var SAPCode = "";
+                rowarrhanafield = [];
+                rowarrapifield = [];
+                rowarrdata = [];
+                headarrhanafield = [];
+                headarrapifield = [];
+                headarrdata = [];
+                headdataval = [], rowdataval = [], sapfield = [], apiheaderfield = [], rowsapfield = [], apirowfield = [];
+                $('#api-row-tablename').val("");
+                $('#api-header-tablename').val("");
+                $('#api-row-table tbody').html("");
+                $('#api-header-table tbody').html("");
+                console.log(createorupdate)
+                $.post('FindMap', { Id: id }).done(result => {   
+                    var apicode = "";
+                    for (var x in result.FieldView) {
+                        var type = result.FieldView[x].FileType;
+                        //var arr = type.split(",");
+                        $('#api-field-code').val(result.FieldView[x].MapCode);
+                        $('#api-field-name').val(result.FieldView[x].MapName);
+                        $('#api-field-addon').val(result.FieldView[x].AddonCode);
+                        $('#api-field-sap').val(result.FieldView[x].SAPCode);
+                        $('#api-field-apicode').val(result.FieldView[x].APICode);
+                        apicode = result.FieldView[x].APICode;
+                        //$('#api-field-path').val(result.FieldView[x].PathCode);
+                        //$('#api-field-headerworksheet').val(result.FieldView[x].HeaderWorksheet);
+                        //$('#api-field-rowworksheet').val(result.FieldView[x].RowWorksheet);
+                        $('#api-field-module').val(result.FieldView[x].ModuleName);
+                        $('#api-field-module').trigger('change');
+                        HanaTable = $("#api-field-module").val();
+                        SAPCode = $("#api-field-sap").val();
+
+                    }
+                    var headertable = $("#api-field-module").find(':selected').data('htable');
+                    var rowtable = $("#api-field-module").find(':selected').data('rtable');
+                    //console.log(headarrhanafield);
+                    for (var x in result.Rows) {
+
+                        var req = result.Rows[x].IsRequired;
+                        var len = result.Rows[x].Length;
+                        var field = result.Rows[x].AddonRowField;
+                        var defval = result.Rows[x].DefaultValue;
+                        rowsapfield.push(result.Rows[x].SAPRowFieldId);
+                        apirowfield.push(result.Rows[x].AddonRowField);
+                        rowdataval.push(result.Rows[x].DataType);
+                        $('#api-row-tablename').val(result.Rows[0].TableName);
+                        count = count + 1;
+                        rowinputid = "api-rowinput" + count;
+                        rowdatatypeid = "api-rowdata" + count;
+                        rowcheckid = "api-rowcheck" + count;
+                        rowcomboid = "api-rowcombo" + count;
+                        apirowcombo = "api-apirowcombo" + count;
+                        rowlengthid = "api-rowlength" + count;
+                        rowdefvalid = "api-rowdefval" + count;
+                        var ischeck = "";
+                        if (req == true) {
+                            ischeck = "checked"
+                        }
+                        else {
+                            ischeck = "unchecked"
+                        }
+                        $('#api-row-table tbody').append('<tr id="trr' + count + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-rowid = "trr' + count + '" ></button></td>' +
+                            '<td><select class="form-control select2 api-rowcombo" style="width: 100%;" id="' + rowcomboid + '"></select></td>' +
+                            //'<td><input type="text" class="form-control api-rowinput" placeholder="Insert Field" id="' + rowinputid + '" value = "' + field + '"></td> ' +
+                            '<td><select class="form-control select2 api-apirowcombo" name="' + rowdatatypeid + '" style="width: 100%;" id="' + apirowcombo + '"></select></td>' +                            
+                            '<td><select class="form-control select2 api-rowtype" style="width: 100%;" id="' + rowdatatypeid + '"></select></td>' +
+                            '<td><input type="text" class="form-control api-rowlength" placeholder="Insert Length" id="' + rowlengthid + '" value = "' + len + '"></td>' +
+                            '<td><input type="text" class="form-control api-rowdefval" placeholder="Default Value" id="' + rowdefvalid + '" value = "'+ defval +'"></td>' +
+                            '<td><input type="checkbox" class="iCheck-helper rowcheck" id="' + rowcheckid + '" ' + ischeck + '/></</td ></tr > ');
+
+                        $('#' + rowcomboid + '').addClass("select2");
+                        $('#' + apirowcombo + '').addClass("select2");
+                        
+                        rowarrhanafield.push(rowcomboid);
+                        rowarrapifield.push(apirowcombo);
+                        rowarrdata.push(rowdatatypeid);
+                    }
+
+                    for (var x in result.Headers) {
+                        var req = result.Headers[x].IsRequired;
+                        var len = result.Headers[x].Length;
+                        sapfield.push(result.Headers[x].SAPHeaderFieldId);
+                        apiheaderfield.push(result.Headers[x].AddonHeaderField);                        
+                        var field = result.Headers[x].AddonHeaderField;
+                        var defval = result.Headers[x].DefaultValue;
+                        headdataval.push(result.Headers[x].DataType);
+                        $('#api-header-tablename').val(result.Headers[0].TableName);
+                        counth = counth + 1;
+                        inputid = "api-headerinput" + counth;
+                        datatypeid = "api-headerdata" + counth;
+                        checkid = "api-headercheck" + counth;
+                        comboid = "api-headercombo" + counth;
+                        apicombo = "api-apicombo" + counth;
+                        lengthid = "api-headerlength" + counth;
+                        defvalid = "api-headerdefval" + counth;
+                        var ischeck = "";
+                        if (req == true) {
+                            ischeck = "checked"
+                        }
+                        else {
+                            ischeck = "unchecked"
+                        }
+                        $('#api-header-table tbody').append('<tr id="tr' + counth + '"><td width="5%"><button type="button" class=" form-control btn-info btn-flat fa fa-trash" data-headid = "tr' + counth + '" ></button></td>' +
+                            '<td><select class="form-control select2 api-headercombo" style="width: 100%;" id="' + comboid + '"></select></td>' +                            
+                            '<td><select class="form-control select2 api-apicombo" name ="' + datatypeid + '" style="width: 100%;" id="' + apicombo + '"></select></td>' +                                
+                            '<td><select class="form-control select2 api-headertype" style="width: 100%;" id="' + datatypeid + '"></select></td>' +
+                            '<td> <input type="text" class="form-control api-headerlength" placeholder="Insert Length" id="' + lengthid + '" value = "' + len + '"></td>' +
+                            '<td> <input type="text" class="form-control api-headerdefval" placeholder="Default Value" id="' + defvalid + '" value = "'+ defval +'"></td>' +
+                            '<td><input type="checkbox" class="iCheck-helper headercheck" id="' + checkid + '" ' + ischeck + '/></</td></tr>');
+
+                        $('#' + comboid + '').addClass("select2");
+                        $('#' + apicombo + '').addClass("select2");
+
+                        headarrhanafield.push(comboid);
+                        headarrapifield.push(apicombo);
+                        headarrdata.push(datatypeid);    
+                    }
+
+                    $.post('HanaTablePopulateAPI', { HanaTable: HanaTable, SAPCode: SAPCode, HeaderTable: headertable, RowTable: rowtable, APICode: apicode }).done(result => {
+
+                        for (var i = 0; i < headarrhanafield.length; i++) {
+                            for (var x in result.HeaderHanaFields) {
+                                $('#' + headarrhanafield[i] + '').append($('<option>', {
+                                    value: result.HeaderHanaFields[x].ColumnName,
+                                    text: result.HeaderHanaFields[x].ColumnName
+                                }));
+                            }
+                            $('#' + headarrhanafield[i] + '').val(sapfield[i]);
+                            $('#' + headarrhanafield[i] + '').trigger('change');
+
+                            for (var x in result.HeaderAPIFields) {
+                                $('#' + headarrapifield[i] + '').append($('<option>', {
+                                    value: result.HeaderAPIFields[x].ColumnName,
+                                    text: result.HeaderAPIFields[x].ColumnName
+                                }));
+                            }
+
+                            $('#' + headarrapifield[i] + '').val(apiheaderfield[i]);
+                            $('#' + headarrapifield[i] + '').trigger('change');
+                        }
+
+                        for (var i = 0; i < headarrdata.length; i++) {
+                            for (var x in result.DataTypes) {
+                                $('#' + headarrdata[i] + '').append($('<option>', {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+                            $('#' + headarrdata[i] + '').val(headdataval[i]);
+                            $('#' + headarrdata[i] + '').trigger('change');
+                        }
+
+
+
+                        for (var i = 0; i < rowarrhanafield.length; i++) {
+                            for (var x in result.RowHanaFields) {
+                                $('#' + rowarrhanafield[i] + '').append($('<option>', {
+                                    value: result.RowHanaFields[x].ColumnName,
+                                    text: result.RowHanaFields[x].ColumnName
+                                }));
+                            }
+                            $('#' + rowarrhanafield[i] + '').val(rowsapfield[i]);
+                            $('#' + rowarrhanafield[i] + '').trigger('change');
+
+                            for (var x in result.RowAPIFields) {
+                                $('#' + rowarrapifield[i] + '').append($('<option>', {
+                                    value: result.RowAPIFields[x].ColumnName,
+                                    text: result.RowAPIFields[x].ColumnName
+                                }));
+                            }
+                            console.log(apirowfield[i]);
+                            $('#' + rowarrapifield[i] + '').val(apirowfield[i]);
+                            $('#' + rowarrapifield[i] + '').trigger('change');
+                        }
+
+                        for (var i = 0; i < rowarrdata.length; i++) {
+
+                            for (var x in result.DataTypes) {
+                                $('#' + rowarrdata[i] + '').append($('<option>', {
+                                    value: result.DataTypes[x].DataType,
+                                    text: result.DataTypes[x].DataType
+                                }));
+                            }
+                            $('#' + rowarrdata[i] + '').val(rowdataval[i]);
+                            $('#' + rowarrdata[i] + '').trigger('change');
+                        }
+
+                    })
+                    //add mapping
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('click', 'button[data-api-id]', function () {
+                var id = $(this).data('api-id');
+                console.log(id)
+                $.post('FindAPI', { Id: id }).done(result => {
+                    for (var x in result.APIView) {
+                        $('#api-field-apicode').val(result.APIView[x].APICode);
+                    }
+                })
+                $(".modal").modal('hide');
+            })
+
+            .on('submit', '#map-submit', function (e) {
+                e.preventDefault();
+                var check = createorupdate;
+                console.log(check);
+                var rowval = [];
+                var headerval = [];
+                var MapId = Mapid;
+                var RowTable = $('#row-tablename').val();
+                var HeaderTable = $('#header-tablename').val();
+                var FieldCode = $('#field-code').val();
+                var FieldName = $('#field-name').val();
+                var AddonCode = $('#field-addon').val();
+                var SAPCode = $('#field-sap').val();
+                var PathCode = $('#field-path').val();
+                var HeaderWorksheet = $('#field-headerworksheet').val();
+                var RowWorksheet = $('#field-rowworksheet').val();
+                var FileName = $('#field-filename').val();
+                var FileType = $('#field-filetype').val();
+                var Module = $('#field-module').val();
+                console.log(RowTable);
+                console.log(HeaderTable);
+                var IsRequired = false;
+                var i = 0;
+                $('#row-tbody tr').each(function () {
+                    if ($('.rowcheck', this).is(":checked")) { IsRequired = "NOT NULL"; }
+                    else { IsRequired = "NULL"; }
+                    rowval.push([$('.rowcombo', this).val(), $('.rowinput', this).val(), $('.rowtype', this).val(), $('.rowlength', this).val(), IsRequired]);
+                });
+
+                $('#header-tbody tr').each(function () {
+                    if ($('.headercheck', this).is(":checked")) { IsRequired = "NOT NULL"; }
+                    else { IsRequired = "NULL"; }
+                    headerval.push([$('.headercombo', this).val(), $('.headerinput', this).val(), $('.headertype', this).val(), $('.headerlength', this).val(), IsRequired]);
+                });
+                console.log(headerval);
+                console.log(rowval);
+                swal({
+                    title: 'Are you sure you want to save this Field mapping Setup?',
+                    text: "",
+                    type: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.value) {
+                        $.post("@Url.Action("CreateField","Configuration")", {
+
+                            MapId: MapId,
+                            MapCode: FieldCode,
+                            MapName: FieldName,
+                            AddonCode: AddonCode,
+                            SAPCode: SAPCode,
+                            PathCode: PathCode,
+                            HeaderWorksheet: HeaderWorksheet,
+                            RowWorksheet: RowWorksheet,
+                            FileName: FileName,
+                            FileType: FileType,
+                            DataType: "DATAFILE",
+                            ModuleName: Module,
+                            Check: check,
+                            RowTable: RowTable,
+                            HeaderTable: HeaderTable,
+                            HeaderVal: headerval,
+                            RowVal: rowval,
+                            RowTable: RowTable,
+                            HeaderTable: HeaderTable,
+                            StoreHeaderVal: headerval,
+                            StoreRowVal: rowval,
+
+                        }).done(function (data) {
+                            if (data) {
+                                swal({
+                                    title: "Success!",
+                                    text: "",
+                                    type: "success",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    onClose: () => {
+                                        window.location.href = "";
+                                    }
+                                });
+                            }
+                        }).fail(function () {
+                            swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+                        });
+                    }
+                })
+            })
+
+            .on('submit', '#api-map-submit', function (e) {
+                e.preventDefault();
+                var check = createorupdate;
+                console.log(check);
+                var rowval = [];
+                var headerval = [];
+                var MapId = Mapid;
+                var RowTable = $('#api-row-tablename').val();
+                var HeaderTable = $('#api-header-tablename').val();
+                var FieldCode = $('#api-field-code').val();
+                var FieldName = $('#api-field-name').val();
+                var AddonCode = $('#api-field-addon').val();
+                var SAPCode = $('#api-field-sap').val();
+                var APICode = $('#api-field-apicode').val();
+                var PathCode = ""; //leave empty, not required for api
+                var HeaderWorksheet = $('#api-field-headerworksheet').val();
+                var RowWorksheet = $('#api-field-rowworksheet').val();
+                var FileName = $('#api-field-filename').val();
+                var FileType = $('#api-field-filetype').val();
+                var Module = $('#api-field-module').val();
+                console.log(RowTable);
+                console.log(HeaderTable);
+                var IsRequired = false;
+                var i = 0;
+                $('#api-row-tbody tr').each(function () {
+                    if ($('.api-rowcheck', this).is(":checked")) { IsRequired = "NOT NULL"; }
+                    else { IsRequired = "NULL"; }
+                    rowval.push([$('.api-rowcombo', this).val(), $('.api-apirowcombo', this).val(), $('.api-rowtype', this).val(), $('.api-rowlength', this).val(), IsRequired, $('.api-rowdefval', this).val()]);
+                });
+
+                $('#api-header-tbody tr').each(function () {
+                    if ($('.api-headercheck', this).is(":checked")) { IsRequired = "NOT NULL"; }
+                    else { IsRequired = "NULL"; }
+                    headerval.push([$('.api-headercombo', this).val(), $('.api-apicombo', this).val(), $('.api-headertype', this).val(), $('.api-headerlength', this).val(), IsRequired, $('.api-headerdefval', this).val()]);
+                });
+                console.log(headerval);
+                console.log(rowval);
+                swal({
+                    title: 'Are you sure you want to save this Field mapping Setup?',
+                    text: "",
+                    type: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.value) {
+                        $.post("@Url.Action("CreateField","Configuration")", {
+
+                            MapId: MapId,
+                            MapCode: FieldCode,
+                            MapName: FieldName,
+                            AddonCode: AddonCode,
+                            SAPCode: SAPCode,
+                            APICode: APICode,
+                            PathCode: PathCode,
+                            HeaderWorksheet: HeaderWorksheet,
+                            RowWorksheet: RowWorksheet,
+                            FileName: FileName,
+                            FileType: FileType,
+                            DataType: "DATAAPI",
+                            ModuleName: Module,
+                            Check: check,
+                            RowTable: RowTable,
+                            HeaderTable: HeaderTable,
+                            HeaderVal: headerval,
+                            RowVal: rowval,
+                            RowTable: RowTable,
+                            HeaderTable: HeaderTable,
+                            StoreHeaderVal: headerval,
+                            StoreRowVal: rowval,
+
+                        }).done(function (data) {
+                            if (data) {
+                                swal({
+                                    title: "Success!",
+                                    text: "",
+                                    type: "success",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    onClose: () => {
+                                        window.location.href = "";
+                                    }
+                                });
+                            }
+                        }).fail(function () {
+                            swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+                        });
+                    }
+                })
+            })
+
+            .on('click', 'button[data-headid]', function () {
+                var id = $(this).data('headid');
+
+                $('#' + id + '').remove();
+            })
+
+            .on('click', 'button[data-rowid]', function () {
+                var id = $(this).data('rowid');
+
+                $('#' + id + '').remove();
+            })
+
+            .on('click', '#mdal-btn-map-file', function () {
+                $('#map-submit').removeAttr('hidden');
+                $('#map-submit').removeProp('hidden');
+                $('#api-map-submit').attr('hidden','hidden');
+                $('#api-map-submit').prop('hidden', 'hidden');
+                $('#back-selection').removeAttr('hidden');
+                $('#back-selection').removeProp('hidden');
+                $('#map-selection').attr('hidden', 'hidden');
+                $('#map-selection').prop('hidden', 'hidden');
+            })
+
+            .on('click', '#mdal-btn-map-api', function () {
+                $('#api-map-submit').removeAttr('hidden');
+                $('#api-map-submit').removeProp('hidden');
+                $('#map-submit').attr('hidden','hidden');
+                $('#map-submit').prop('hidden','hidden');
+                $('#back-selection').removeAttr('hidden');
+                $('#back-selection').removeProp('hidden');
+                $('#map-selection').attr('hidden','hidden');
+                $('#map-selection').prop('hidden','hidden');
+            })
+
+            .on('click', '#back-selection', function () {
+                $('#api-map-submit').attr('hidden','hidden');
+                $('#api-map-submit').prop('hidden','hidden');
+                $('#map-submit').attr('hidden','hidden');
+                $('#map-submit').prop('hidden','hidden');
+                $('#back-selection').attr('hidden','hidden');
+                $('#back-selection').prop('hidden','hidden');
+                $('#map-selection').removeAttr('hidden');
+                $('#map-selection').removeProp('hidden');
+            })
+
+        $('#field-code').on('input', function (e) {
+            if ($(this).val() == '') {
+                createorupdate = 0;
+                $('#field-code').val("");
+                $('#field-name').val("");
+                $('#field-addon').val("");
+                $('#field-sap').val("");
+                $('#field-path').val("");
+                $('#field-headerworksheet').val("");
+                $('#field-rowworksheet').val("");
+                $('#field-filename').val("");
+                $('#field-filetype').val("");
+                $('#field-module').val("");
+
+                $('#row-table tbody').html("");
+                $('#header-table tbody').html("");
+                $('#row-tablename').val("");
+                $('#header-tablename').val("");
+                rowarrhanafield = [];
+                rowarrdata = [];
+                headarrhanafield = [];
+                headarrdata = [];
+                headdataval = [], rowdataval = [], sapfield = [], rowsapfield = [];
+            }
+        });
+
+        $(".mapcode").focusout(function () {
+            var Code = $(this).val();
+            $.post('ValidateMap', { Code: Code }).done(result => {
+                for (var x in result.FieldView) {
+
+                    if (result.FieldView[x].MapCode != "" && createorupdate == 0) {
+                        swal('Map Code is already taken.', '', 'warning')
+                        $(this).val("");
+                        $(this).focus();
+                    }
+                }
+            })
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' /* optional */
+            });
+        });
+    </script>
+}

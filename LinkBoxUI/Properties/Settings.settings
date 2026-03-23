@@ -1,0 +1,31 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LinkBoxUI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Constr" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=192.168.2.9;Initial Catalog=SAO_LINKBOX;Persist Security Info=True;User ID=sa;Password=Sb1@dbti&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=192.168.2.9;Initial Catalog=SAO_LINKBOX;Persist Security Info=True;User ID=sa;Password=Sb1@dbti</Value>
+    </Setting>
+    <Setting Name="FTPPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\192.168.1.232\d$\FTPUploader\</Value>
+    </Setting>
+    <Setting Name="AddonFTPPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\192.168.2.9\d$\FTPUploader\</Value>
+    </Setting>
+    <Setting Name="Url" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:40710/Linkbox/Post</Value>
+    </Setting>
+    <Setting Name="User" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Administrator</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Test@r&amp;dteam</Value>
+    </Setting>
+    <Setting Name="ServerName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.2.32</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

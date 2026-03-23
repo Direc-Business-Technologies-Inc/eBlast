@@ -1,0 +1,615 @@
+﻿@model  DomainLayer.ViewModels.MapCreateViewModel
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Query Manager</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="feature" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Edit</th>
+                                <th>Query Code</th>
+                                <th>Query Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var query in Model.QueryManagerView)
+                            {
+                                <tr>
+                                    <td width="5%"><button type="button" class="btn-info btn-flat fa fa-edit" data-toggle="modal" data-target="#edit-modal" id="edit-query" data-queryid="@query.Id"></button></td>
+                                    <td>@query.QueryCode</td>
+                                    <td>@query.QueryName</td>
+                                    @if (query.IsActive == true)
+                                    {
+                                        <td><span class="label label-success">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="label label-danger">In Active</span></td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table><button type="button" class="btn btn-primary btn-custom2" id="new-query" style="float: right;" data-toggle="modal" data-target="#create-modal">New</button>
+                </div><!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade" id="create-modal">
+    <div class="modal-dialog modal-lg">
+        <form id="query-submit">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Query Generator</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>*Query Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Query Code" id="query-code" required>
+                                </div>
+                            </div>
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>Connection Type:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <select class="form-control select2" style="width: 100%;" id="connection" required>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" id="featureprocess-formgroup">
+                                <label>*Query Name:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Query Name" id="query-name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>Connection String:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <select class="form-control select2" style="width: 100%;" id="connection-string" required>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group" id="featureprocess-formgroup">
+                                <label>Query:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-align-left"></i></span>
+                                    <textarea style="resize: vertical; min-height:150px;" id="query-string" class="form-control" placeholder="Query String" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="modal-title">Executed Query</h4>
+                        <br />
+                        <table id="executeQueryTable" class="table table-bordered table-striped table-responsive" style="width:100%"></table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-custom" style="float:left!important" id="btn-generate-query">Check Data</button>
+                    <button type="button" class="btn btn-default btn-custom" data-dismiss="modal" onclick="@("window.location.href='" + @Url.Action("QueryManager", "Configuration") + "'");">Close</button>
+                    <button type="submit" class="btn btn-primary btn-custom" id="btn-save">Save</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="edit-modal">
+    <div class="modal-dialog modal-lg">
+        <form id="edit-query-submit">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Edit Query</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>*Query Code:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Query Code" id="edit-query-code">
+                                </div>
+                            </div>
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>Connection Type:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <select class="form-control select2" style="width: 100%;" id="edit-connection" required>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label></label>
+                                <div class="input-group">
+                                    <input type="checkbox" class="flat-red" id="edit-query-active" /> Is Active?
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" id="featureprocess-formgroup">
+                                <label>*Query Name:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Query Name" id="edit-query-name" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="featurecode-formgroup">
+                                <label>Connection String:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-codepen"></i>
+                                    </div>
+                                    <select class="form-control select2" style="width: 100%;" id="edit-connection-string" required>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group" id="featureprocess-formgroup">
+                                <label>Query:</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-align-left"></i></span>
+                                    <textarea style="resize: vertical; min-height:150px;" id="edit-query-string" class="form-control" placeholder="Query String" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="modal-title">Executed Query</h4>
+                        <br />
+                        <table id="edit-executeQueryTable" class="table table-bordered table-striped table-responsive" style="width:100%"></table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-custom" style="float:left!important" id="edit-btn-generate-query">Check Data</button>
+                    <button type="button" class="btn btn-default btn-custom" data-dismiss="modal" onclick="@("window.location.href='" + @Url.Action("QueryManager", "Configuration") + "'");">Close</button>
+                    <button type="submit" class="btn btn-primary btn-custom" id="btn-save">Save Changes</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-mask]').inputmask()
+
+            $('#feature').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': false
+            })
+        })
+
+
+        $('.modal').on('hidden.bs.modal', function (e) {
+            $("#btn-save").trigger('reset');
+        });
+    </script>
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' /* optional */
+            });
+        });
+    </script>
+    <script>
+        $(function () {
+            $('.select2').select2()
+        });
+
+        //for (var i = 0; i < length; i++) {
+        //    $("#connection-string").append($('<option>', {
+        //        value: "",
+        //        text: ""
+        //    }));
+        //}
+
+        //for (var i = 0; i < length; i++) {
+        //    $("#edit-connection-string").append($('<option>', {
+        //        value: "",
+        //        text: ""
+        //    }));
+        //}
+    </script>
+
+    <script>
+        $(document).on('submit', '#query-submit', function (e) {
+            e.preventDefault();
+            var queryCode = $("#query-code").val();
+            var queryName = $("#query-name").val();
+            var connection = $("#connection").val();
+            var connectionString = $("#connection-string").val();
+            var queryString = $("#query-string").val();
+
+            swal({
+                title: 'Are you sure you want to save new query string?',
+                text: "",
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+
+                    $.post('CreateQuery', {
+                        QueryCode: queryCode,
+                        QueryName: queryName,
+                        ConnectionString: connectionString,
+                        ConnectionType: connection,
+                        QueryString: queryString
+                    }).done(function (data) {
+                        if (data) {
+                            $("#feature").load("Process #feature");
+                            $('.modal').modal('hide');
+                            setTimeout(function () { window.location.href = ""; }, 1500);
+                        }
+                    }).fail(function () {
+                        swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+                    });
+                }
+            })
+        }).on('click', 'button[data-queryid]', function () {
+            var id = $(this).data('queryid');
+            ids = id;
+            $.post('FindQuery', { Id: id }).done(result => {
+                var i = 0;
+                for (var x in result.DatabaseConnectionView) {
+                    $("#edit-query-code").val(result.DatabaseConnectionView[x].QueryCode);
+                    validate = result.DatabaseConnectionView[x].Id;
+                    $("#edit-query-name").val(result.DatabaseConnectionView[x].QueryName);
+                    var resConn = result.DatabaseConnectionView[x].ConnectionType;
+
+                    //$("#edit-connection").val(resConn);
+                    $("#edit-query-string").val(result.DatabaseConnectionView[x].QueryString);
+                    document.getElementById('edit-connection').value = resConn;
+                    $("#edit-connection-string").empty();
+                    $.post('FindConnectionString', {
+                        type: resConn
+                    }).done(result => {
+                        for (var x in result.DatabaseConnectionView) {
+                            $("#edit-connection-string").append($('<option>', {
+                                value: result.DatabaseConnectionView[x].Id,
+                                text: result.DatabaseConnectionView[x].QueryName
+                            }));
+                        }
+                    })
+
+                    //$("#edit-connection-string").val(result.DatabaseConnectionView[x].ConnectionString);
+
+                    document.getElementById('edit-connection-string').value = result.DatabaseConnectionView[x].ConnectionString;
+                    if (result.DatabaseConnectionView[x].IsActive == true) {
+                        $('input:checkbox[id = edit-query-active]').iCheck('check');
+                        $('input:checkbox[id = edit-query-active]').val('checked');
+                    }
+                    else {
+                        $('input:checkbox[id = edit-query-active]').iCheck('uncheck');
+                        $('input:checkbox[id = edit-query-active]').val('unchecked');
+                    }
+
+
+                    $('input:checkbox[id = edit-query-active]').on('ifChecked', function (event) {
+                        $('input:checkbox[id = edit-query-active]').val('checked');
+                    });
+
+                    $('input:checkbox[id = edit-query-active]').on('ifUnchecked', function (event) {
+                        $('input:checkbox[id = edit-query-active]').val('unchecked');
+                    });
+                }
+            })
+        }).on('submit', '#edit-query-submit', function (e) {
+            e.preventDefault();
+            var id = ids;
+            var IsActive;
+            var ChkboxVal = $('input:checkbox[id = edit-query-active]').val();
+            if (ChkboxVal == 'checked') { IsActive = true; }
+            else { IsActive = false; }
+
+            var queryCode = $("#edit-query-code").val();
+            var queryName = $("#edit-query-name").val();
+            var connection = $("#edit-connection").val();
+            var connectionString = $("#edit-connection-string").val();
+            var queryString = $("#edit-query-string").val();
+
+            swal({
+                title: 'Are you sure?',
+                text: "You want to update the following data?",
+                type: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    $.getJSON('UpdateQuery', {
+                        Id: id,
+                        QueryCode: queryCode,
+                        QueryName: queryName,
+                        ConnectionString: connectionString,
+                        ConnectionType: connection,
+                        QueryString: queryString,
+                        IsActive: IsActive
+                    }).done(function (data) {
+                        if (data) {
+                            swal('Success!', '', 'success')
+                            //$("#feature").load("Process #feature");
+                            $('.modal').modal('hide');
+                            setTimeout(function () { window.location.href = ""; }, 1500);
+                        }
+                    }).fail(function () {
+                        swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+                    });
+                }
+            })
+        }).on('click', '#new-query', function (e) {
+
+            $("#connection").empty();
+
+            $("#connection").append($('<option>', {
+                value: "SAP",
+                text: "SAP Connection"
+            }));
+
+            $("#connection").append($('<option>', {
+                value: "Addon",
+                text: "Addon Connection"
+            }));
+
+            $("#connection-string").empty();
+
+            $.post('FindConnectionString', {
+                type: "SAP"
+            }).done(result => {
+                for (var x in result.DatabaseConnectionView) {
+                    $("#connection-string").append($('<option>', {
+                        value: result.DatabaseConnectionView[x].Id,
+                        text: result.DatabaseConnectionView[x].QueryName
+                    }));
+                }
+            })
+        }).on('click', '#edit-query', function (e) {
+
+            $("#edit-connection").empty();
+
+            $("#edit-connection").append($('<option>', {
+                value: "SAP",
+                text: "SAP Connection"
+            }));
+
+            $("#edit-connection").append($('<option>', {
+                value: "Addon",
+                text: "Addon Connection"
+            }));
+
+            //$("#edit-connection-string").empty();
+
+            //$.post('FindConnectionString', {
+            //    type: "SAP"
+            //}).done(result => {
+            //    for (var x in result.DatabaseConnectionView) {
+            //        $("#edit-connection-string").append($('<option>', {
+            //            value: result.DatabaseConnectionView[x].Code,
+            //            text: result.DatabaseConnectionView[x].Name
+            //        }));
+            //    }
+            //})
+        });
+
+        $('.modal').on('hide.bs.modal', function () {
+            $(this).find("input,textarea,select").val('').end();
+
+        });
+
+        $("#connection").html('').select2({
+            dropdownParent: $('#doc-item-modal .modal-content'),
+            selectOnClose: true,
+            width: 'resolve'
+        });
+
+        $("#edit-connection").html('').select2({
+            dropdownParent: $('#doc-item-modal .modal-content'),
+            selectOnClose: true,
+            width: 'resolve'
+        });
+
+        $("#connection-string").html('').select2({
+            dropdownParent: $('#doc-item-modal .modal-content'),
+            selectOnClose: true,
+            width: 'resolve'
+        });
+
+        $("#edit-connection-string").html('').select2({
+            dropdownParent: $('#doc-item-modal .modal-content'),
+            selectOnClose: true,
+            width: 'resolve'
+        });
+
+        $("#connection").change(function () {
+            $("#connection-string").empty();
+            var conType = $("#connection").val();
+            $.post('FindConnectionString', {
+                Type: conType
+            }).done(result => {
+                for (var x in result.DatabaseConnectionView) {
+                    $("#connection-string").append($('<option>', {
+                        value: result.DatabaseConnectionView[x].Id,
+                        text: result.DatabaseConnectionView[x].QueryName
+                    }));
+                }
+            })
+        });
+
+        $("#edit-connection").change(function () {
+            $("#edit-connection-string").empty();
+            var conType = $("#edit-connection").val();
+            $.post('FindConnectionString', {
+                Type: conType
+            }).done(result => {
+                for (var x in result.DatabaseConnectionView) {
+                    $("#edit-connection-string").append($('<option>', {
+                        value: result.DatabaseConnectionView[x].Id,
+                        text: result.DatabaseConnectionView[x].QueryName
+                    }));
+                }
+            })
+        });
+
+        $("#btn-generate-query").on('click', function (e) {
+            var connType = $("#connection").val();
+            var conString = $("#connection-string").val();
+            var query = $("#query-string").val();
+
+            $.post('ExecuteQuery', {
+                Type: connType,
+                ConString: conString,
+                Query: query
+            }).done(result => {
+
+                dataSet = result.JSONresult;
+                var jsonobj = jQuery.parseJSON(dataSet);
+                console.log(jsonobj[0])
+                var my_columns = [];
+
+                if (jsonobj == null || jsonobj == 0) {
+                    jsonobj = null;
+                }
+
+                $.each(jsonobj[0], function (key, value) {
+                    var my_item = {};
+                    my_item.data = key;
+                    my_item.title = key;
+                    my_columns.push(my_item);
+                });
+
+                $('#executeQueryTable').DataTable({
+                    columns: my_columns,
+                    data: jsonobj,
+                    'destroy': true,
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': false,
+                    "scrollCollapse": true,
+                    "scrollY": 200,
+                    "scrollX": true
+                });
+
+            }).fail(function () {
+                swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+            });
+        });
+
+        $("#edit-btn-generate-query").on('click', function (e) {
+            var connType = $("#edit-connection").val();
+            var conString = $("#edit-connection-string").val();
+            var query = $("#edit-query-string").val();
+
+            $.post('ExecuteQuery', {
+                Type: connType,
+                ConString: conString,
+                Query: query
+            }).done(result => {
+
+                dataSet = result.JSONresult;
+                var jsonobj = jQuery.parseJSON(dataSet);
+                console.log(jsonobj[0])
+                var my_columns = [];
+
+                if (jsonobj == null || jsonobj == 0) {
+                    jsonobj = null;
+                }
+
+                $.each(jsonobj[0], function (key, value) {
+                    var my_item = {};
+                    my_item.data = key;
+                    my_item.title = key;
+                    my_columns.push(my_item);
+                });
+
+                $('#edit-executeQueryTable').DataTable({
+                    columns: my_columns,
+                    data: jsonobj,
+                    'destroy': true,
+                    'paging': true,
+                    'lengthChange': true,
+                    'searching': true,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': false,
+                    "scrollCollapse": true,
+                    "scrollY": 200,
+                    "scrollX": true
+                });
+
+            }).fail(function () {
+                swal('Something went wrong.', 'Please contact the administrator.', 'warning')
+            });
+        });
+    </script>
+}

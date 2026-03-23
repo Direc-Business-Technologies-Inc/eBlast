@@ -1,0 +1,228 @@
+﻿@model DomainLayer.ViewModels.DashboardViewModel
+<section class="content-header">
+    <h1>
+        Dashboard
+    </h1>
+
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                @*<div class="box-header">
+                    <h3 class="box-title">
+                        <i class="fa fa-database"></i> Server :
+                    </h3>
+                    <select class="form-control select2" style="width: 15%;" id="select-server">
+                        @foreach (var item in Model.SAPList)
+                        {
+                            <option value="@item.Code">@item.Code</option>
+                        }
+                    </select>
+                </div>
+                <div class="box-body">
+                    <h3>Instock Items</h3>
+                    <table id="item-table" class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ItemCode</th>
+                                <th>ItemName</th>
+                                <th>Uom</th>
+                                <th>SAP Price</th>
+                                <th>LastUpdate</th>
+                                <th>SAP Inventory</th>
+                                <th>POS Price</th>
+                                <th>Sales Qty</th>
+                                <th>Instock</th>
+                            </tr>
+                        </thead>
+                        <tbody id="header-tbody"></tbody>
+
+                    </table>
+                    <button type="button" style="float:right;" class="btn btn-info" onclick="$('#item-table_wrapper .buttons-csv').click()">Export</button>
+                    <br />
+                    <br />
+                    <h3>POS and SAP Price Comparison</h3>
+                    <table id="itemcomparison-table" class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ItemCode</th>
+                                <th>ItemName</th>
+                                <th>Uom</th>
+                                <th>SAP Price</th>
+                                <th>POS Price</th>
+                                <th>Instock</th>
+                                <th>LastUpdate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="header-tbody"></tbody>
+
+                    </table>
+                    <button type="button" style="float:right;" class="btn btn-info" onclick="$('#itemcomparison-table_wrapper .buttons-csv').click()">Export</button>
+                    <br />
+                </div>*@
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/export/buttons.html5.min.js")
+    @Scripts.Render("~/Scripts/export/buttons.print.min.js")
+    @Scripts.Render("~/Scripts/export/jszip.min.js")
+    @Scripts.Render("~/Scripts/export/pdfmake.min.js")
+    @Scripts.Render("~/Scripts/export/vfs_fonts.js")
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+
+            var table = $('#item-table').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'dom': 'Bfrtip',
+                'buttons': [
+                    {
+                        'extend': 'excelHtml5',
+                        'title': 'Inventory Summary Report'
+                    },
+                    {
+                        'extend': 'csv',
+                        'title': 'Inventory Summary Report'
+                    }
+                ]
+            });
+            var tablecomparison = $('#itemcomparison-table').DataTable({
+                'paging': true,
+                'lengthChange': true,
+                'searching': true,
+                'ordering': true,
+                'info': true,
+                'autoWidth': true,
+                'dom': 'Bfrtip',
+                'buttons': [
+                    {
+                        'extend': 'excelHtml5',
+                        'title': 'Price Comparison Report'
+                    },
+                    {
+                        'extend': 'csv',
+                        'title': 'Price Comparison  Report'
+                    }
+                ]
+            });
+            $('.dt-buttons').hide();
+            $.post('/Home/GetItemStock', { Code: $('#select-server').val() }).done(result => {
+                table.clear().draw();
+                tablecomparison.clear().draw();
+                for (var x in result.ItemList) {
+                    table.row.add([
+                        result.ItemList[x].ItemCode,
+                        result.ItemList[x].ItemName,
+                        result.ItemList[x].Uom,
+                        result.ItemList[x].Price,
+                        result.ItemList[x].LastUpdate,
+                        result.ItemList[x].Stock,
+                        result.ItemList[x].SalesPrice,
+                        result.ItemList[x].SalesQty,
+                        result.ItemList[x].CurrentStock,
+
+                    ]).draw(false);
+                    if (parseInt(result.ItemList[x].CurrentStock) <= 0) {
+
+
+                        var rowsCount = table.data().length;
+                        var rowsPerPage = table.page.len();
+                        var row = table.row(rowsCount - 1);
+
+                        row.node().classList.add('bg-danger');
+                    }
+                }
+
+                for (var x in result.ItemComparisonList) {
+                    tablecomparison.row.add([
+                        result.ItemComparisonList[x].ItemCode,
+                        result.ItemComparisonList[x].ItemName,
+                        result.ItemComparisonList[x].Uom,
+                        result.ItemComparisonList[x].Price,
+                        
+                        result.ItemComparisonList[x].SalesPrice,
+                        result.ItemComparisonList[x].CurrentStock,
+                        result.ItemComparisonList[x].LastUpdate,
+
+                    ]).draw(false);
+                    if (parseInt(result.ItemComparisonList[x].CurrentStock) <= 0) {
+
+
+                        var rowsCount = tablecomparison.data().length;
+                        var rowsPerPage = tablecomparison.page.len();
+                        var row = tablecomparison.row(rowsCount - 1);
+
+                        row.node().classList.add('bg-danger');
+                    }
+                }
+
+            })
+
+            $(document).on('select2:select', '#select-server', function (e) {
+                var Code = $(this).val();
+                $.post('/Home/GetItemStock', { Code: Code }).done(result => {
+                    table.clear().draw();
+                    tablecomparison.clear().draw();
+                    for (var x in result.ItemList) {
+                        table.row.add([
+                            result.ItemList[x].ItemCode,
+                            result.ItemList[x].ItemName,
+                            result.ItemList[x].Uom,
+                            result.ItemList[x].Price,
+                            result.ItemList[x].LastUpdate,
+                            result.ItemList[x].Stock,
+                            result.ItemList[x].SalesPrice,
+                            result.ItemList[x].SalesQty,
+                            result.ItemList[x].CurrentStock,
+
+                        ]).draw(false);
+
+                        if (parseInt(result.ItemList[x].CurrentStock) <= 0) {
+
+
+                            var rowsCount = table.data().length;
+                            var rowsPerPage = table.page.len();
+                            var row = table.row(rowsCount - 1);
+
+                            row.node().classList.add('bg-danger');
+                        }
+
+                    }
+
+                    for (var x in result.ItemComparisonList) {
+                        tablecomparison.row.add([
+                            result.ItemComparisonList[x].ItemCode,
+                            result.ItemComparisonList[x].ItemName,
+                            result.ItemComparisonList[x].Uom,
+                            result.ItemComparisonList[x].Price,
+                            
+                            result.ItemComparisonList[x].SalesPrice,
+                            result.ItemComparisonList[x].CurrentStock,
+                            result.ItemComparisonList[x].LastUpdate,
+
+                        ]).draw(false);
+                        if (parseInt(result.ItemComparisonList[x].CurrentStock) <= 0) {
+
+                            var rowsCount = tablecomparison.data().length;
+                            var rowsPerPage = tablecomparison.page.len();
+                            var row = tablecomparison.row(rowsCount - 1);
+
+                            row.node().classList.add('bg-danger');
+                        }
+                    }
+                })
+            });
+
+        });
+    </script>
+}
