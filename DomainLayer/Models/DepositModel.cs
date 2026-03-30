@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainLayer
 {
-    public partial class Deposit
+    public class Deposit
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,15 +15,15 @@ namespace DomainLayer
 
         [StringLength(20)]
         public string BrkDescription { get; set; }
+
         public bool IsActive { get; set; }
-        
+
         public DateTime? CreateDate { get; set; }
-        
+
         public int CreateUserID { get; set; }
 
         public DateTime? UpdateDate { get; set; }
-        
-        public int? UpdateUserID { get; set; }
 
+        public int? UpdateUserID { get; set; }
     }
 }

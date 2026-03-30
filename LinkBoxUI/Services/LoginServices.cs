@@ -51,7 +51,6 @@ namespace LinkBoxUI.Services
                     CreateUserID = 1,
                     Attempt = 0,
                     AuthorizationID = 1,
-
                 });
                 _context.SaveChanges();
                 SaveChanges();

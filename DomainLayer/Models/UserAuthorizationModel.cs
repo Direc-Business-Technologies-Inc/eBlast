@@ -3,16 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class UserAuthorization
+    public class UserAuthorization
     {
         [Key]
         public int UserAuthId { get; set; }
 
         public int UserId { get; set; }
+
         public int AuthId { get; set; }
-  
+
         public bool IsActive { get; set; }
-        
+
         public DateTime CreateDate { get; set; }
 
         public int CreateUserID { get; set; }
@@ -20,6 +21,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

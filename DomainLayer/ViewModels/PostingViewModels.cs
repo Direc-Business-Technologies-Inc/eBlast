@@ -10,6 +10,8 @@ namespace DomainLayer.ViewModels
     {
         public string HanaConnection { get; set; }
         public string AddonConnection { get; set; }
+        public string SAPConnection { get; set; }
+        public string Query { get; set; }
         public Credential CredentialDetails { get; set; }
         public class Credential
         {

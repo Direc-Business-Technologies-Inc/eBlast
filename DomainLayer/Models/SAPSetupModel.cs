@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class SAPSetup
+    public class SAPSetup
     {
         [Key]
         public int SAPId { get; set; }
@@ -13,15 +13,16 @@ namespace DomainLayer
 
         [StringLength(20)]
         public string SAPDBVersion { get; set; }
+
         public int SAPLicensePort { get; set; }
 
         [StringLength(50)]
         public string SAPServerName { get; set; }
 
-        [StringLength(15)]  
+        [StringLength(15)]
         public string SAPIPAddress { get; set; }
 
-        [StringLength(20)]
+        [StringLength(50)]
         public string SAPDBName { get; set; }
 
         [StringLength(10)]
@@ -50,6 +51,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

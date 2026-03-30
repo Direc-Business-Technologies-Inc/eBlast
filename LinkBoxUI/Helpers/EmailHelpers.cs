@@ -1,6 +1,10 @@
 ﻿using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+using DataAccessLayer.Class;
 using DataCipher;
 using DomainLayer.ViewModels;
+using LinkBoxUI.Services;
+using NPOI.POIFS.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,258 +13,326 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Web;
 
 namespace LinkBoxUI.Helpers
 {
     public class EmailHelpers
     {
         public SqlHelpers sql = new SqlHelpers();
+        GlobalServices globalServices = new GlobalServices();
         public string Send(EmailViewModel creds)
         {
             try
             {
-
-
-                //if (creds.EmailCreds.Body.Contains("ATTACHMENT"))
-                //{
                 if (creds.ToTable != null && creds.ToTable.Rows.Count != 0)
                 {
-                    var columns = creds.ToTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToList();
+                    List<string> columns = (from DataColumn x in creds.ToTable.Columns
+                                            select x.ColumnName).ToList();
                     foreach (DataRow item in creds.ToTable.Rows)
                     {
-                        SmtpClient client = new SmtpClient(creds.EmailCreds.EmailHost);
-                        //If you need to authenticate
-                        var password = Cryption.Decrypt($"{creds.EmailCreds.EmailPassword}");
-                        client.UseDefaultCredentials = false;
-                        client.Credentials = new NetworkCredential(creds.EmailCreds.EmailFrom, password.Replace(creds.EmailCreds.EmailFrom, ""));
-                        client.Port = Convert.ToInt32(creds.EmailCreds.EmailPort);
-                        client.EnableSsl = true;
+                        var safas = item.ItemArray[0];
+
+                        SmtpClient smtpClient = new SmtpClient(creds.EmailCreds.EmailHost);
+                        string text = Cryption.Decrypt($"{creds.EmailCreds.EmailPassword}");
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(creds.EmailCreds.EmailFrom, text.Replace(creds.EmailCreds.EmailFrom, ""));
+                        smtpClient.Port = Convert.ToInt32(creds.EmailCreds.EmailPort);
+                        smtpClient.EnableSsl = true;
                         MailMessage mailMessage = new MailMessage();
                         mailMessage.From = new MailAddress(creds.EmailCreds.EmailFrom, creds.EmailCreds.EmailDesc);
-                        //need to enhance
-                        mailMessage.To.Add(new MailAddress(item[$@"{columns.Where(x => x.ToLower().Contains("mail")).FirstOrDefault()}"].ToString()));
-                        //mailMessage.To.Add(new MailAddress("jameszeta1@gmail.com"));
+                        mailMessage.To.Add(new MailAddress(item[string.Format("{0}", columns.Where((string x) => x.ToLower().Contains("mail")).FirstOrDefault())].ToString()));
                         if (creds.CcTable != null && creds.CcTable.Rows.Count != 0)
                         {
                             try
                             {
-                                var cccolumns = creds.CcTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToList();
-                                var ccs = creds.CcTable.Rows.Cast<DataRow>().Where(x => x[$@"{cccolumns.Where(y => y.ToLower().Contains("to")).FirstOrDefault()}"].ToString() == item[$@"{columns.Where(y => y.ToLower().Contains("mail")).FirstOrDefault()}"].ToString()).ToList();
-                                foreach (DataRow cc in ccs)
+                                List<string> cccolumns = (from DataColumn x in creds.CcTable.Columns
+                                                          select x.ColumnName).ToList();
+                                List<DataRow> list = (from DataRow x in creds.CcTable.Rows
+                                                      where x[string.Format("{0}", cccolumns.Where((string y) => y.ToLower().Contains("to")).FirstOrDefault())].ToString() == item[string.Format("{0}", columns.Where((string y) => y.ToLower().Contains("mail")).FirstOrDefault())].ToString()
+                                                      select x).ToList();
+                                foreach (DataRow item3 in list)
                                 {
-                                    mailMessage.CC.Add(new MailAddress(cc[$@"{cccolumns.Where(x => x.ToLower().Contains("cc")).FirstOrDefault()}"].ToString()));
+                                    mailMessage.CC.Add(new MailAddress(item3[string.Format("{0}", cccolumns.Where((string x) => x.ToLower().Contains("cc")).FirstOrDefault())].ToString()));
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-
                             }
                         }
                         if (!string.IsNullOrEmpty(creds.EmailCreds.EmailCc))
                         {
-                            foreach (var cc in creds.EmailCreds.EmailCc.Split(','))
+                            string[] array = creds.EmailCreds.EmailCc.Split(',');
+                            foreach (string text2 in array)
                             {
-                                mailMessage.CC.Add(new MailAddress(cc.ToString()));
-                                //mailMessage.To.Add(new MailAddress("direc.danilo@gmail.com"));
+                                mailMessage.CC.Add(new MailAddress(text2.ToString()));
                             }
                         }
-                        var subject = creds.EmailCreds.EmailSubject;
-                        var ebody = creds.EmailCreds.Body;
-                        try { mailMessage.Subject = subject.Replace("#CUSTOMERNAME#", item["CardName"].ToString()); } catch (Exception ex) { mailMessage.Subject = subject; }
-                        try { mailMessage.Subject = mailMessage.Subject.Replace("#CUSTOMERNAME#", item["CardCode"].ToString()); } catch (Exception ex) { mailMessage.Subject = mailMessage.Subject; }
-                        mailMessage.Body = ebody.Replace("#ATTACHMENT#", "");
-                        mailMessage.IsBodyHtml = true;
-                        try { mailMessage.Body = mailMessage.Body.Replace("#CUSTOMERNAME#", item["CardName"].ToString()); } catch (Exception ex) { mailMessage.Body = mailMessage.Body; }
-
+                        string emailSubject = creds.EmailCreds.EmailSubject;
+                        string body = creds.EmailCreds.Body;
                         try
                         {
-                            if (ebody.Contains("QUERY"))
+                            mailMessage.Subject = emailSubject.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Subject = emailSubject;
+                        }
+                        try
+                        {
+                            mailMessage.Subject = mailMessage.Subject.Replace("#CUSTOMERNAME#", item["CardCode"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Subject = mailMessage.Subject;
+                        }
+                        mailMessage.Body = body.Replace("#ATTACHMENT#", "");
+                        mailMessage.IsBodyHtml = true;
+                        try
+                        {
+                            mailMessage.Body = mailMessage.Body.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Body = mailMessage.Body;
+                        }
+                        try
+                        {
+                            if (body.Contains("QUERY"))
                             {
-                                var query = creds.QueryDetails.QueryString;
-                                query = query.Replace("#CARDCODE#", item["CardCode"].ToString());
-                                creds.QueryTable = sql.Fill_DataTable(creds, query);
-
-                                StringBuilder fields = new StringBuilder();
-
+                                string queryString = creds.QueryDetails.QueryString;
+                                queryString = queryString.Replace("#CARDCODE#", item["CardCode"].ToString());
+                                creds.QueryTable = sql.Fill_DataTable(creds, queryString);
+                                StringBuilder stringBuilder = new StringBuilder();
                                 foreach (DataRow row in creds.QueryTable.Rows)
                                 {
-                                    fields.AppendLine($"<tr>");
-
-                                    foreach (DataColumn col in creds.QueryTable.Columns)
+                                    stringBuilder.AppendLine("<tr>");
+                                    foreach (DataColumn column in creds.QueryTable.Columns)
                                     {
-                                        fields.AppendLine($"<td>{row[col.ColumnName].ToString()}</td>");
+                                        stringBuilder.AppendLine($"<td>{row[column.ColumnName].ToString()}</td>");
                                     }
-
-                                    fields.AppendLine($"</tr>");
-
+                                    stringBuilder.AppendLine("</tr>");
                                 }
-                                var headearFields = new StringBuilder();
-
-
-                                foreach (DataColumn col in creds.QueryTable.Columns)
+                                StringBuilder stringBuilder2 = new StringBuilder();
+                                foreach (DataColumn column2 in creds.QueryTable.Columns)
                                 {
-                                    headearFields.AppendLine($"<th>{col.ColumnName}</th>");
+                                    stringBuilder2.AppendLine($"<th>{column2.ColumnName}</th>");
                                 }
-
-                                var body = $@"<table style ='text-align:center;width:100%;height: 50px;' border ='1' >
-                                                            <tr>
-                                                                {headearFields.ToString()}
-                                                            </tr>
-                                                            <tbody>
-                                                                {fields.ToString()}
-                                                            </tbody>
-                                                            </table>
-                                                            <br/><br/>";
-
-                                mailMessage.Body = mailMessage.Body.Replace("#EMAILQUERY#", body);
+                                string newValue = $"<table style ='text-align:center;width:100%;height: 50px;' border ='1' >\r\n                                                            <tr>\r\n                                                                {stringBuilder2.ToString()}\r\n                                                            </tr>\r\n                                                            <tbody>\r\n                                                                {stringBuilder.ToString()}\r\n                                                            </tbody>\r\n                                                            </table>\r\n                                                            <br/><br/>";
+                                mailMessage.Body = mailMessage.Body.Replace("#EMAILQUERY#", newValue);
                                 mailMessage.IsBodyHtml = true;
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-
                         }
-
-                        var attachmentPath = "";
-                        //if (creds.EmailCreds.FileName.ToLower().Contains("rpt"))
-                        //{
-                        //    ReportDocument cryRpt = new ReportDocument();
-                        //    cryRpt.Load(creds.EmailCreds.FilePath);
-                        //    cryRpt.Refresh();
-                        //    cryRpt.SetDatabaseLogon(creds.FileCredentials.SapUser, creds.FileCredentials.SapPassword, creds.FileCredentials.ServerName, creds.FileCredentials.DbName);
-                        //    cryRpt.SetParameterValue("CardCode", item["CardCode"].ToString());
-                        //    attachmentPath = $@"{creds.EmailCreds.SavePath}{item["CardCode"].ToString()}_{DateTime.Now.ToShortDateString().ToString().Replace("/", "")}.pdf";
-                        //    cryRpt.ExportToDisk(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat, attachmentPath);
-                        //    Attachment attachment = new Attachment(attachmentPath);
-                        //    mailMessage.Attachments.Add(attachment);
-                        //    mailMessage.IsBodyHtml = true;
-                        //}
-                        //else
-                        //{
-                        //    if (!string.IsNullOrEmpty(creds.EmailCreds.FilePath))
-                        //    {
-                        //        Attachment attachment = new Attachment(creds.EmailCreds.FilePath);
-                        //        mailMessage.Attachments.Add(attachment);
-                        //        mailMessage.IsBodyHtml = true;
-                        //    }
-                        //}
-
-                        var datetoday = DateTime.Now;
-
-                        mailMessage.Body = mailMessage.Body.Replace("#MM#", datetoday.ToString("MM"));
-                        mailMessage.Body = mailMessage.Body.Replace("#DD#", datetoday.ToString("dd"));
-                        mailMessage.Body = mailMessage.Body.Replace("#YYYY#", datetoday.ToString("yyyy"));
-
-                        var duedate = DateTime.Now.AddDays(7);
-                        mailMessage.Body = mailMessage.Body.Replace("#DUEMM#", datetoday.ToString("MM"));
-                        mailMessage.Body = mailMessage.Body.Replace("#DUEDD#", datetoday.ToString("dd"));
-                        mailMessage.Body = mailMessage.Body.Replace("#DUEYYYY#", datetoday.ToString("yyyy"));
-
+                        string text3 = "";
+                        ReportDocument reportDocument = new ReportDocument();
+                        if (creds.EmailCreds.FileName.ToLower().Contains("rpt"))
+                        {
+                            reportDocument.Load(creds.EmailCreds.FilePath);
+                            reportDocument.Refresh();
+                            reportDocument.SetDatabaseLogon(creds.FileCredentials.SapUser, creds.FileCredentials.SapPassword, creds.FileCredentials.ServerName, creds.FileCredentials.DbName);
+                            reportDocument.SetParameterValue("CardCode", item["CardCode"].ToString());
+                            text3 = string.Format("{0}{1}_{2}.pdf", creds.EmailCreds.SavePath, item["CardCode"].ToString(), DateTime.Now.ToString("yyyyMMddHHmmssFFFFF").Replace("/", ""));
+                            reportDocument.ExportToDisk(ExportFormatType.PortableDocFormat, text3);
+                            Attachment item2 = new Attachment(text3);
+                            mailMessage.Attachments.Add(item2);
+                            mailMessage.IsBodyHtml = true;
+                        }
+                        else if (!string.IsNullOrEmpty(creds.EmailCreds.FilePath))
+                        {
+                            Attachment item2 = new Attachment(creds.EmailCreds.FilePath);
+                            mailMessage.Attachments.Add(item2);
+                            mailMessage.IsBodyHtml = true;
+                        }
+                        DateTime now = DateTime.Now;
+                        mailMessage.Body = mailMessage.Body.Replace("#MM#", now.ToString("MM"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DD#", now.ToString("dd"));
+                        mailMessage.Body = mailMessage.Body.Replace("#YYYY#", now.ToString("yyyy"));
+                        DateTime dateTime = DateTime.Now.AddDays(7.0);
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEMM#", now.ToString("MM"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEDD#", now.ToString("dd"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEYYYY#", now.ToString("yyyy"));
                         if (creds.CompanyDetails != null)
                         {
-                            //mailMessage.Body = mailMessage.Body.Replace("#LOGO#", att.ContentId);
-
                             mailMessage.Body = mailMessage.Body.Replace("#MOBILENO#", creds.CompanyDetails.MobileNo);
                             mailMessage.Body = mailMessage.Body.Replace("#TELNO#", creds.CompanyDetails.TelNo);
                             mailMessage.Body = mailMessage.Body.Replace("#COMPANYNAME#", creds.CompanyDetails.CompanyName);
                             mailMessage.Body = mailMessage.Body.Replace("#COMPANYADDRESS#", creds.CompanyDetails.Address);
-                            //mailMessage.AlternateViews.Add(GetEmbeddedImage(creds.CompanyDetails.FilePath, mailMessage.Body));
+                            mailMessage.AlternateViews.Add(GetEmbeddedImage(creds.CompanyDetails.FilePath, mailMessage.Body));
                         }
-
-
-                        client.Send(mailMessage);
+                        smtpClient.Send(mailMessage);
+                        reportDocument.Dispose();
                     }
+                    return "Success";
                 }
-                else
-                {
-                    return "No Data Fetch.";
-                }
-
-
-                //}
-                //else
-                //{
-
-
-                //    SmtpClient client = new SmtpClient(creds.EmailCreds.EmailHost);
-                //    //If you need to authenticate
-                //    var password = Cryption.Decrypt($"{creds.EmailCreds.EmailPassword}");
-                //    client.UseDefaultCredentials = false;
-                //    client.Credentials = new NetworkCredential(creds.EmailCreds.EmailFrom, password);
-                //    client.Port = Convert.ToInt32(creds.EmailCreds.EmailPort);
-                //    client.EnableSsl = true;
-                //    MailMessage mailMessage = new MailMessage();
-                //    mailMessage.From = new MailAddress(creds.EmailCreds.EmailFrom);
-                //    foreach (var cc in creds.EmailCreds.EmailTo.Split(','))
-                //    {
-                //        mailMessage.To.Add(new MailAddress(cc));
-                //        //mailMessage.To.Add(new MailAddress("direc.danilo@gmail.com"));
-                //    }
-                //    foreach (var cc in creds.EmailCreds.EmailCc.Split(','))
-                //    {
-                //        mailMessage.CC.Add(new MailAddress(cc.ToString()));
-                //    }
-
-                //    if (creds.QueryTable != null && creds.QueryTable.Rows.Count != 0)
-                //    {
-
-                //        mailMessage.Subject = creds.EmailCreds.EmailSubject;
-                //        if (creds.EmailCreds.Body.Contains("QUERY"))
-                //        {
-
-
-                //            StringBuilder fields = new StringBuilder();
-
-                //            foreach (DataRow item in creds.QueryTable.Rows)
-                //            {
-                //                fields.AppendLine($"<tr>");
-
-                //                foreach (DataColumn col in creds.QueryTable.Columns)
-                //                {
-                //                    fields.AppendLine($"<td>{item[col.ColumnName].ToString()}</td>");
-                //                }
-
-                //                fields.AppendLine($"</tr>");
-
-                //            }
-                //            var headearFields = new StringBuilder();
-
-
-                //            foreach (DataColumn col in creds.QueryTable.Columns)
-                //            {
-                //                headearFields.AppendLine($"<th>{col.ColumnName}</th>");
-                //            }
-
-                //            var body = $@"<table style ='text-align:center;width:100%;height: 50px;' border ='1' >
-                //                                <tr>
-                //                                    {headearFields.ToString()}
-                //                                </tr>
-                //                                <tbody>
-                //                                    {fields.ToString()}
-                //                                </tbody>
-                //                                </table>
-                //                                <br/><br/>";
-
-                //            mailMessage.Body = creds.EmailCreds.Body.Replace("#EMAILQUERY#", body);
-                //            //mailMessage.Body += "<footer>This email was generated automatically." +
-                //            //    "Please do NOT reply.<br/> This message was sent to specific and responsible people and intended for these people only.<br/>" +
-                //            //    "If this was sent to any unrelated people, please delete it immediately.Thank you</footer>";
-
-                //            mailMessage.IsBodyHtml = true;
-                //            client.Send(mailMessage);
-                //        }
-
-                //    }
-
-                //}
-                return "Success";
+                return "No Data Fetch.";
             }
             catch (Exception ex)
             {
                 return ex.ToString();
             }
         }
+
+        public string SendNew(EmailViewModel creds, string doc)
+        {
+            try
+            {
+                if (creds.ToTable != null && creds.ToTable.Rows.Count != 0)
+                {
+                    List<string> columns = (from DataColumn x in creds.ToTable.Columns
+                                            select x.ColumnName).ToList();
+                    foreach (DataRow item in creds.ToTable.Rows)
+                    {
+                        var docEntry = item["DocEntry"].ToString();
+
+                        SmtpClient smtpClient = new SmtpClient(creds.EmailCreds.EmailHost);
+                        string text = Cryption.Decrypt($"{creds.EmailCreds.EmailPassword}");
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(creds.EmailCreds.EmailFrom, text.Replace(creds.EmailCreds.EmailFrom, ""));
+                        smtpClient.Port = Convert.ToInt32(creds.EmailCreds.EmailPort);
+                        smtpClient.EnableSsl = true;
+                        MailMessage mailMessage = new MailMessage();
+                        mailMessage.From = new MailAddress(creds.EmailCreds.EmailFrom, creds.EmailCreds.EmailDesc);
+                        mailMessage.To.Add(new MailAddress(item[string.Format("{0}", columns.Where((string x) => x.ToLower().Contains("mail")).FirstOrDefault())].ToString()));
+                        if (creds.CcTable != null && creds.CcTable.Rows.Count != 0)
+                        {
+                            try
+                            {
+                                List<string> cccolumns = (from DataColumn x in creds.CcTable.Columns
+                                                          select x.ColumnName).ToList();
+                                List<DataRow> list = (from DataRow x in creds.CcTable.Rows
+                                                      where x[string.Format("{0}", cccolumns.Where((string y) => y.ToLower().Contains("to")).FirstOrDefault())].ToString() == item[string.Format("{0}", columns.Where((string y) => y.ToLower().Contains("mail")).FirstOrDefault())].ToString()
+                                                      select x).ToList();
+                                foreach (DataRow item3 in list)
+                                {
+                                    mailMessage.CC.Add(new MailAddress(item3[string.Format("{0}", cccolumns.Where((string x) => x.ToLower().Contains("cc")).FirstOrDefault())].ToString()));
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(creds.EmailCreds.EmailCc))
+                        {
+                            string[] array = creds.EmailCreds.EmailCc.Split(',');
+                            foreach (string text2 in array)
+                            {
+                                mailMessage.CC.Add(new MailAddress(text2.ToString()));
+                            }
+                        }
+                        string emailSubject = creds.EmailCreds.EmailSubject;
+                        string body = creds.EmailCreds.Body;
+                        try
+                        {
+                            mailMessage.Subject = emailSubject.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Subject = emailSubject;
+                        }
+                        try
+                        {
+                            mailMessage.Subject = mailMessage.Subject.Replace("#CUSTOMERNAME#", item["CardCode"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Subject = mailMessage.Subject;
+                        }
+                        mailMessage.Body = body.Replace("#ATTACHMENT#", "");
+                        mailMessage.IsBodyHtml = true;
+                        try
+                        {
+                            mailMessage.Body = mailMessage.Body.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            mailMessage.Body = mailMessage.Body;
+                        }
+                        try
+                        {
+                            if (body.Contains("QUERY"))
+                            {
+                                string queryString = creds.QueryDetails.QueryString;
+                                queryString = queryString.Replace("#CARDCODE#", item["CardCode"].ToString());
+                                creds.QueryTable = sql.Fill_DataTable(creds, queryString);
+                                StringBuilder stringBuilder = new StringBuilder();
+                                foreach (DataRow row in creds.QueryTable.Rows)
+                                {
+                                    stringBuilder.AppendLine("<tr>");
+                                    foreach (DataColumn column in creds.QueryTable.Columns)
+                                    {
+                                        stringBuilder.AppendLine($"<td>{row[column.ColumnName].ToString()}</td>");
+                                    }
+                                    stringBuilder.AppendLine("</tr>");
+                                }
+                                StringBuilder stringBuilder2 = new StringBuilder();
+                                foreach (DataColumn column2 in creds.QueryTable.Columns)
+                                {
+                                    stringBuilder2.AppendLine($"<th>{column2.ColumnName}</th>");
+                                }
+                                string newValue = $"<table style ='text-align:center;width:100%;height: 50px;' border ='1' >\r\n                                                            <tr>\r\n                                                                {stringBuilder2.ToString()}\r\n                                                            </tr>\r\n                                                            <tbody>\r\n                                                                {stringBuilder.ToString()}\r\n                                                            </tbody>\r\n                                                            </table>\r\n                                                            <br/><br/>";
+                                mailMessage.Body = mailMessage.Body.Replace("#EMAILQUERY#", newValue);
+                                mailMessage.IsBodyHtml = true;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        string text3 = "";
+                        ReportDocument reportDocument = new ReportDocument();
+                        if (creds.EmailCreds.FileName.ToLower().Contains("rpt"))
+                        {
+                            reportDocument.Load(creds.EmailCreds.FilePath);
+                            reportDocument.Refresh();
+                            reportDocument.SetDatabaseLogon(creds.FileCredentials.SapUser, creds.FileCredentials.SapPassword, creds.FileCredentials.ServerName, creds.FileCredentials.DbName);
+                            reportDocument.SetParameterValue("DocKey@", docEntry);
+                            reportDocument.SetParameterValue("UserCode@", item["PrepBy"].ToString());
+                            text3 = string.Format("{0}{1}_{2}.pdf", creds.EmailCreds.SavePath, item["CardCode"].ToString(), DateTime.Now.ToString("yyyyMMddHHmmssFFFFF").Replace("/", ""));
+                            reportDocument.ExportToDisk(ExportFormatType.PortableDocFormat, text3);
+                            Attachment item2 = new Attachment(text3);
+                            mailMessage.Attachments.Add(item2);
+                            mailMessage.IsBodyHtml = true;
+                        }
+                        else if (!string.IsNullOrEmpty(creds.EmailCreds.FilePath))
+                        {
+                            Attachment item2 = new Attachment(creds.EmailCreds.FilePath);
+                            mailMessage.Attachments.Add(item2);
+                            mailMessage.IsBodyHtml = true;
+                        }
+                        DateTime now = DateTime.Now;
+                        mailMessage.Body = mailMessage.Body.Replace("#MM#", now.ToString("MM"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DD#", now.ToString("dd"));
+                        mailMessage.Body = mailMessage.Body.Replace("#YYYY#", now.ToString("yyyy"));
+                        DateTime dateTime = DateTime.Now.AddDays(7.0);
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEMM#", now.ToString("MM"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEDD#", now.ToString("dd"));
+                        mailMessage.Body = mailMessage.Body.Replace("#DUEYYYY#", now.ToString("yyyy"));
+                        //if (creds.CompanyDetails != null)
+                        //{
+                        //    mailMessage.Body = mailMessage.Body.Replace("#MOBILENO#", creds.CompanyDetails.MobileNo);
+                        //    mailMessage.Body = mailMessage.Body.Replace("#TELNO#", creds.CompanyDetails.TelNo);
+                        //    mailMessage.Body = mailMessage.Body.Replace("#COMPANYNAME#", creds.CompanyDetails.CompanyName);
+                        //    mailMessage.Body = mailMessage.Body.Replace("#COMPANYADDRESS#", creds.CompanyDetails.Address);
+                        //    mailMessage.AlternateViews.Add(GetEmbeddedImage(creds.CompanyDetails.FilePath, mailMessage.Body));
+                        //}
+                        smtpClient.Send(mailMessage);
+                        
+                        UpdateDocument(docEntry, doc);
+                        
+                        reportDocument.Dispose();
+                    }
+                    return "Success";
+                }
+
+                return "No Data Fetch.";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
         public AlternateView GetEmbeddedImage(String filePath, string body)
         {
             LinkedResource res = new LinkedResource(filePath, MediaTypeNames.Image.Jpeg);
@@ -271,5 +343,22 @@ namespace LinkBoxUI.Helpers
             return alternateView;
         }
 
+        public bool UpdateDocument(string docEntry, string doc)
+        {
+            try
+            {
+                var getConnectionAndQuery = globalServices.UpdateDocumentQuery(doc);
+
+                var con = getConnectionAndQuery.SAPConnection;
+                var query = getConnectionAndQuery.Query.Replace("@DocEntry", docEntry.ToString());
+
+                return DataAccess.Execute(con, query);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
     }
 }

@@ -17,6 +17,8 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using LinkBoxUI.Helpers;
+using DocumentFormat.OpenXml.Drawing;
+using DomainLayer.Models;
 
 namespace LinkBoxUI.Services
 {
@@ -321,26 +323,7 @@ namespace LinkBoxUI.Services
                 model.EmailCreds.SavePath = pathsetup != null ? pathsetup.LocalPath : "";
                 model.EmailCreds.FileCred = filesetup != null ? filesetup.Credential : "0";
                 model.EmailCreds.Company = emailtemplate.Company;
-                //model.EmailCreds = _context.Schedules.Where(x => x.SchedCode == Task).AsEnumerable().Join(_context.EmailTemplate, em => em.Process, a => a.Code, (em, a) => new { em, a }).AsEnumerable()
-                //          .Join(_context.EmailSetup, ema => ema.em.Credential, sc => sc.EmailCode, (ema, sc) => new { ema, sc }).Join(_context.Documents,
-                //          emasc => emasc.ema.a.FileCode, sched => sched.Code, (emasc, sched) => new { emasc, sched }).Join(_context.PathSetup, emascsched => emascsched.sched.SavePath, path => path.PathId.ToString(), (emascsched, p) => new EmailViewModel.EmailCredentials
-                //          {
-                //              EmailFrom = emascsched.emasc.sc.Email,
-                //              EmailCc = string.Join(",", emascsched.emasc.ema.a.CC),
-                //              EmailHost = emascsched.emasc.sc.SMTPClient,
-                //              EmailPassword = emascsched.emasc.sc.Password,
-                //              EmailPort = emascsched.emasc.sc.Port,
-                //              EmailSubject = emascsched.emasc.ema.a.Subject,
-                //              EmailTo = string.Join(",", emascsched.emasc.ema.a.To),
-                //              Body = emascsched.emasc.ema.a.Body,
-                //              ToQuery = emascsched.emasc.ema.a.QueryTo,
-                //              CcQuery = emascsched.emasc.ema.a.QueryCC,
-                //              QueryData = emascsched.emasc.ema.a.QueryCode,
-                //              FilePath = emascsched.sched.FilePath,
-                //              FileName = emascsched.sched.FileName,
-                //              SavePath = p.LocalPath,
-                //              FileCred = emascsched.sched.Credential,
-                //          }).FirstOrDefault();
+
                 if (model.EmailCreds != null)
                 {
 
@@ -353,6 +336,7 @@ namespace LinkBoxUI.Services
                         TelNo = x.TelNo,
                         FileName = x.FileName
                     }).FirstOrDefault();
+
                     model.FileCredentials = _context.SAPSetup.AsEnumerable().Where(x => x.SAPId == Convert.ToDecimal(string.IsNullOrEmpty(model.EmailCreds.FileCred) ? "0" : model.EmailCreds.FileCred)).Select(x => new EmailViewModel.FileCredential
                     {
                         DbName = x.SAPDBName,
@@ -370,6 +354,7 @@ namespace LinkBoxUI.Services
                         QueryCode = x.QueryCode,
                         QueryString = x.QueryString
                     }).FirstOrDefault();
+
                     model.ToTable = GetQueryData(model);
 
                     model.QueryDetails = _context.QueryManager.AsEnumerable().Where(x => x.Id == Convert.ToInt32(model.EmailCreds.CcQuery)).Select(x => new EmailViewModel.QuerySetup
@@ -476,13 +461,13 @@ namespace LinkBoxUI.Services
             PostingViewModel model = new PostingViewModel();
             model.HeaderFields = _context.Headers.Where(x => x.MapId == MapId).Select(x => new PostingViewModel.Fields
             {
-                SAPFieldId = x.SAPHeaderFieldId,
+                //SAPFieldId = x.SAPHeaderFieldId,
                 AddonField = x.AddonHeaderField
             }).ToList() ?? new List<PostingViewModel.Fields>();
 
             model.RowFields = _context.Rows.Where(x => x.MapId == MapId).Select(x => new PostingViewModel.Fields
             {
-                SAPFieldId = x.SAPRowFieldId,
+                //SAPFieldId = x.SAPRowFieldId,
                 AddonField = x.AddonRowField
             }).ToList() ?? new List<PostingViewModel.Fields>();
 
@@ -530,20 +515,20 @@ namespace LinkBoxUI.Services
                     {
                         if (Creds.CredentialDetails.Module.ToLower().Contains("sales order"))
                         {
-                            model.APIView = _context.FieldMappings.Where(x => x.MapId == mapid)
-                                       .Join(_context.APISetups, f => f.APICode, a => a.APICode, (f, a) => new { f, a })
-                                       .Select(x => new PostingViewModel.APIViewModel
-                                       {
-                                           APIId = x.a.APIId,
-                                           APICode = x.a.APICode,
-                                           APIMethod = x.a.APIMethod,
-                                           APIURL = x.a.APIURL,
-                                           APIKey = x.a.APIKey,
-                                           APISecretKey = x.a.APISecretKey,
-                                           APIToken = x.a.APIToken,
-                                           APILoginUrl = x.a.APILoginUrl,
-                                           APILoginBody = x.a.APILoginBody,
-                                       }).ToList();
+                            //model.APIView = _context.FieldMappings.Where(x => x.MapId == mapid)
+                            //           .Join(_context.APISetups, f => f.APICode, a => a.APICode, (f, a) => new { f, a })
+                            //           .Select(x => new PostingViewModel.APIViewModel
+                            //           {
+                            //               APIId = x.a.APIId,
+                            //               APICode = x.a.APICode,
+                            //               APIMethod = x.a.APIMethod,
+                            //               APIURL = x.a.APIURL,
+                            //               APIKey = x.a.APIKey,
+                            //               APISecretKey = x.a.APISecretKey,
+                            //               APIToken = x.a.APIToken,
+                            //               APILoginUrl = x.a.APILoginUrl,
+                            //               APILoginBody = x.a.APILoginBody,
+                            //           }).ToList();
                             var apimethod = model.APIView.Select(x => x.APIMethod).FirstOrDefault();
                             var apiurl = model.APIView.Select(x => x.APIURL).FirstOrDefault();
                             var apiuser = model.APIView.Select(x => x.APIKey).FirstOrDefault();
@@ -555,13 +540,13 @@ namespace LinkBoxUI.Services
 
                             model.HeaderFields = _context.Headers.Where(x => x.MapId == mapid).Select(x => new PostingViewModel.Fields
                             {
-                                SAPFieldId = x.SAPHeaderFieldId,
+                                //SAPFieldId = x.SAPHeaderFieldId,
                                 AddonField = x.AddonHeaderField
                             }).ToList() ?? new List<PostingViewModel.Fields>();
 
                             model.RowFields = _context.Rows.Where(x => x.MapId == mapid).Select(x => new PostingViewModel.Fields
                             {
-                                SAPFieldId = x.SAPRowFieldId,
+                                //SAPFieldId = x.SAPRowFieldId,
                                 AddonField = x.AddonRowField
                             }).ToList() ?? new List<PostingViewModel.Fields>();
 
@@ -589,6 +574,31 @@ namespace LinkBoxUI.Services
                     }
                 }
             }
+
+            return model;
+        }
+
+        public PostingViewModel UpdateDocumentQuery(string doc)
+        {
+            PostingViewModel model = new PostingViewModel();
+            QueryManager queryManager = new QueryManager();
+
+            if(doc == "AR")
+                queryManager = _context.QueryManager.Where(x => x.QueryCode == "UPDATEARSENDSTATUS").FirstOrDefault();
+            else
+                queryManager = _context.QueryManager.Where(x => x.QueryCode == "UPDATEIPSENDSTATUS").FirstOrDefault();
+
+            var databaseToUse = queryManager.ConnectionString;
+
+            if (!int.TryParse(databaseToUse, out int sapId))
+                throw new ArgumentException($"Invalid SAP ID: '{databaseToUse}'");
+
+            var sAPSetups = _context.SAPSetup.FirstOrDefault(x => x.SAPId == sapId);
+            model.SAPConnection = sAPSetups.SAPDBVersion.Contains("HANA") ? "DRIVER={HDBODBC32};" + $"SERVERNODE={sAPSetups.SAPServerName}{(sAPSetups.SAPDBPort > 0 ? $":{sAPSetups.SAPDBPort}" : "")};UID={sAPSetups.SAPDBuser};PWD={sAPSetups.SAPDBPassword};CS={sAPSetups.SAPDBName}" :
+                                                $"Data Source={sAPSetups.SAPServerName}{(sAPSetups.SAPDBPort > 0 ? $":{sAPSetups.SAPDBPort}" : "")};Initial Catalog={sAPSetups.SAPDBName};Persist Security Info=True;User ID={sAPSetups.SAPDBuser};Password={sAPSetups.SAPDBPassword}";
+
+            //model.Query = queryManager.QueryString.Replace("@DocNum", doc);
+            model.Query = queryManager.QueryString;
 
             return model;
         }

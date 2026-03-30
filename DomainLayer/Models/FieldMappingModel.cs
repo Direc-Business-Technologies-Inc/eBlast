@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class FieldMapping
+    public class FieldMapping
     {
         [Key]
         public int MapId { get; set; }
@@ -46,11 +46,7 @@ namespace DomainLayer
         public int CreateUserID { get; set; }
 
         public DateTime? UpdateDate { get; set; }
-        
+
         public int? UpdateUserID { get; set; }
-
-        [StringLength(20)]
-        public string APICode { get; set; }
-
     }
 }

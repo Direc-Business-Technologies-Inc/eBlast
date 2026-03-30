@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class Sync
+    public class Sync
     {
         [Key]
         public int Id { get; set; }
@@ -25,8 +25,10 @@ namespace DomainLayer
 
         [StringLength(100)]
         public string IpAddress { get; set; }
+
         [StringLength(100)]
         public string FileType { get; set; }
+
         [StringLength(50)]
         public string DbName { get; set; }
 
@@ -48,6 +50,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

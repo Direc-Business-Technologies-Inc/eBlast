@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainLayer
 {
-    public partial class Query
+    public class Query
     {
         [Key]
         public int Id { get; set; }
@@ -14,6 +14,7 @@ namespace DomainLayer
 
         [Column(TypeName = "text")]
         public string QueryString { get; set; }
+
         public bool IsActive { get; set; }
 
         public DateTime CreateDate { get; set; }
@@ -23,6 +24,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class Module
+    public class Module
     {
         [Key]
         public int ModId { get; set; }

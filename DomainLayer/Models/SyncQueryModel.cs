@@ -32,6 +32,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

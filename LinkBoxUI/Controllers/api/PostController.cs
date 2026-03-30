@@ -118,6 +118,52 @@ namespace LinkBoxUI.Controllers.api
         }
 
         [HttpPost]
+        [Route("PostDocument")]
+        public string PostDocument(string Code, string Document)
+        {
+            try
+            {
+                bool status = false;
+                string message = "";
+                var EmailCreds = globalServices.GetEmailCredentials(Code);
+
+                if (EmailCreds.EmailCreds != null)
+                {
+                    var sendEmail = eml.SendNew(EmailCreds, Document).ToLower();
+
+                    if (!sendEmail.Contains("success"))
+                    {
+                        status = false;
+                        message = sendEmail;
+                    }
+                    else
+                    {
+                        status = true;
+                        message = sendEmail;
+                    }
+                }
+                var response = new
+                {
+                    Message = message,
+                    Status = status
+                };
+
+                return JsonConvert.SerializeObject(response);
+            }
+            catch (Exception ex)
+            {
+                var res = new
+                {
+                    Message = ex.Message,
+                    Status = false
+                };
+
+                return JsonConvert.SerializeObject(res);
+            }
+
+        }
+
+        [HttpPost]
         [Route("sap/login")]
         public bool Login(AuthenticationCredViewModel auth)
         {

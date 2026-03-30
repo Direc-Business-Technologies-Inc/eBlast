@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class PathSetup
+    public class PathSetup
     {
         [Key]
         public int PathId { get; set; }
@@ -34,9 +34,6 @@ namespace DomainLayer
         [StringLength(50)]
         public string RemotePassword { get; set; }
 
-        //[StringLength(50)]
-        //public string FileType { get; set; }
-
         public bool IsActive { get; set; }
 
         public DateTime? CreateDate { get; set; }
@@ -46,6 +43,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-
     }
 }

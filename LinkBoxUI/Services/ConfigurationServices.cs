@@ -79,9 +79,9 @@ namespace LinkBoxUI.Services
                 APIURL = x.APIURL,
                 APIMethod = x.APIMethod,
                 IsActive = x.IsActive,
-                APIKey = x.APIKey,
-                APISecretKey = x.APISecretKey,
-                APIToken = x.APIToken,
+                //APIKey = x.APIKey,
+                //APISecretKey = x.APISecretKey,
+                //APIToken = x.APIToken,
             }).ToList();
 
             model.ParameterList = _context.Paramenters.Select(x => new SetupCreateViewModel.Parameter
@@ -403,14 +403,14 @@ namespace LinkBoxUI.Services
                 APIId = x.APIId,
                 APICode = x.APICode,
                 APIMethod = x.APIMethod,
-                APIModule = x.APIModule,
+                //APIModule = x.APIModule,
                 APIURL = x.APIURL,
                 IsActive = x.IsActive,
-                APIKey =x.APIKey,
-                APISecretKey = x.APISecretKey,
-                APIToken = x.APIToken,
-                APILoginUrl = x.APILoginUrl,
-                APILoginBody = x.APILoginBody,
+                //APIKey =x.APIKey,
+                //APISecretKey = x.APISecretKey,
+                //APIToken = x.APIToken,
+                //APILoginUrl = x.APILoginUrl,
+                //APILoginBody = x.APILoginBody,
             }).ToList();
 
             return model;

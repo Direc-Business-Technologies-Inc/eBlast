@@ -91,9 +91,9 @@ namespace LinkBoxUI.Services
                 APICode = x.APICode,
                 APIMethod = x.APIMethod,
                 APIURL = x.APIURL,
-                APIKey = x.APIKey,
-                APISecretKey = x.APISecretKey,
-                APIToken = x.APIToken,
+                //APIKey = x.APIKey,
+                //APISecretKey = x.APISecretKey,
+                //APIToken = x.APIToken,
             }).ToList();
             return model;
         }
@@ -132,7 +132,7 @@ namespace LinkBoxUI.Services
                                     RowWorksheet = x.RowWorksheet,
                                     FileName = x.FileName,
                                     FileType = x.FileType,
-                                    APICode = x.APICode,
+                                    //APICode = x.APICode,
                                 }).ToList();
 
             model.Headers = _context.Headers
@@ -141,12 +141,12 @@ namespace LinkBoxUI.Services
                               {
 
                                   TableName = x.TableName,
-                                  SAPHeaderFieldId = x.SAPHeaderFieldId,
+                                  //SAPHeaderFieldId = x.SAPHeaderFieldId,
                                   AddonHeaderField = x.AddonHeaderField,
                                   DataType = x.DataType,
                                   Length = x.Length,
                                   IsRequired = x.IsRequired,
-                                  DefaultValue = x.DefaultValue,
+                                  //DefaultValue = x.DefaultValue,
                               }).ToList();
 
             model.Rows = _context.Rows
@@ -154,12 +154,12 @@ namespace LinkBoxUI.Services
                            .Select((x) => new MapCreateViewModel.Row
                            {
                                TableName = x.TableName,
-                               SAPRowFieldId = x.SAPRowFieldId,
+                               //SAPRowFieldId = x.SAPRowFieldId,
                                AddonRowField = x.AddonRowField,
                                DataType = x.DataType,
                                Length = x.Length,
                                IsRequired = x.IsRequired,
-                               DefaultValue = x.DefaultValue,
+                               //DefaultValue = x.DefaultValue,
                            }).ToList();
 
 
@@ -235,12 +235,12 @@ namespace LinkBoxUI.Services
             {
                 var _id = (check == 1 ? mapid : newid);
                 var fieldid = item[0].ToString();
-                var dtexist = _context.Headers.Where(x => x.MapId == _id && x.SAPHeaderFieldId == fieldid).Any();
+                var dtexist = _context.Headers.Where(x => x.MapId == _id).Any();
                 if (dtexist)
                 {
-                    var headerdata = _context.Headers.Where(x => x.MapId == _id && x.SAPHeaderFieldId == fieldid).FirstOrDefault();
+                    var headerdata = _context.Headers.Where(x => x.MapId == _id).FirstOrDefault();
                     headerdata.MapId = check == 1 ? mapid : newid;
-                    headerdata.SAPHeaderFieldId = item[0].ToString();
+                    //headerdata.SAPHeaderFieldId = item[0].ToString();
                     headerdata.TableName = table;
                     headerdata.AddonHeaderField = item[1].ToString();
                     headerdata.DataType = item[2].ToString();
@@ -248,7 +248,7 @@ namespace LinkBoxUI.Services
                     headerdata.IsRequired = item[4].ToString() == "NULL" ? false : true;
                     headerdata.CreateDate = DateTime.Now;
                     headerdata.CreateUserID = id;
-                    headerdata.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
+                    //headerdata.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
                     _context.SaveChanges();
                     SaveChanges();
                 }
@@ -256,7 +256,7 @@ namespace LinkBoxUI.Services
                 {
                     Header header = new Header();
                     header.MapId = check == 1 ? mapid : newid;
-                    header.SAPHeaderFieldId = item[0].ToString();
+                    //header.SAPHeaderFieldId = item[0].ToString();
                     header.TableName = table;
                     header.AddonHeaderField = item[1].ToString();
                     header.DataType = item[2].ToString();
@@ -264,7 +264,7 @@ namespace LinkBoxUI.Services
                     header.IsRequired = item[4].ToString() == "NULL" ? false : true;
                     header.CreateDate = DateTime.Now;
                     header.CreateUserID = id;
-                    header.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
+                    //header.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
                     _context.Headers.Add(header);
                     _context.SaveChanges();
                     SaveChanges();
@@ -277,12 +277,11 @@ namespace LinkBoxUI.Services
             {
                 var _id = (check == 1 ? mapid : newid);
                 var fieldid = item[0].ToString();
-                var dtexist = _context.Rows.Where(x => x.MapId == _id && x.SAPRowFieldId == fieldid).Any();
+                var dtexist = _context.Rows.Where(x => x.MapId == _id).Any();
                 if (dtexist)
                 {
-                    var rowdata = _context.Rows.Where(x => x.MapId == _id && x.SAPRowFieldId == fieldid).FirstOrDefault();
+                    var rowdata = _context.Rows.Where(x => x.MapId == _id ).FirstOrDefault();
                     rowdata.MapId = check == 1 ? mapid : newid;
-                    rowdata.SAPRowFieldId = item[0].ToString();
                     rowdata.TableName = table;
                     rowdata.AddonRowField = item[1].ToString();
                     rowdata.DataType = item[2].ToString();
@@ -290,7 +289,7 @@ namespace LinkBoxUI.Services
                     rowdata.IsRequired = item[4].ToString() == "NULL" ? false : true;
                     rowdata.CreateDate = DateTime.Now;
                     rowdata.CreateUserID = id;
-                    rowdata.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
+                    //rowdata.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
                     _context.SaveChanges();
                     SaveChanges();
                 }
@@ -298,7 +297,6 @@ namespace LinkBoxUI.Services
                 {
                     Row row = new Row();
                     row.MapId = check == 1 ? mapid : newid;
-                    row.SAPRowFieldId = item[0].ToString();
                     row.TableName = table;
                     row.AddonRowField = item[1].ToString();
                     row.DataType = item[2].ToString();
@@ -306,7 +304,7 @@ namespace LinkBoxUI.Services
                     row.IsRequired = item[4].ToString() == "NULL" ? false : true;
                     row.CreateDate = DateTime.Now;
                     row.CreateUserID = id;
-                    row.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
+                    //row.DefaultValue = item[5].ToString() == "NULL" ? "" : item[5].ToString();
                     _context.Rows.Add(row);
                     _context.SaveChanges();
                     SaveChanges();
@@ -542,10 +540,14 @@ namespace LinkBoxUI.Services
             //string ret = JsonSboSample();
             var apimethod = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APIMethod).FirstOrDefault(); apimethod = (apimethod == null ? "" : apimethod);
             var apiurl = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APIURL).FirstOrDefault(); apiurl = (apiurl == null ? "" : apiurl);
-            var apiuser = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APIKey).FirstOrDefault(); apiuser = (apiuser == null ? "" : apiuser);
-            var apipwd = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APISecretKey).FirstOrDefault(); apipwd = (apipwd == null ? "" : apipwd); 
-            var apiloginurl = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APILoginUrl).FirstOrDefault(); apiloginurl = (apiloginurl == null ? "" : apiloginurl);
-            var apiloginbody = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APILoginBody).FirstOrDefault(); apiloginbody = (apiloginbody == null ? "" : apiloginbody);
+            //var apiuser = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APIKey).FirstOrDefault(); apiuser = (apiuser == null ? "" : apiuser);
+            //var apipwd = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APISecretKey).FirstOrDefault(); apipwd = (apipwd == null ? "" : apipwd); 
+            //var apiloginurl = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APILoginUrl).FirstOrDefault(); apiloginurl = (apiloginurl == null ? "" : apiloginurl);
+            //var apiloginbody = _context.APISetups.Where(x => x.APICode == APICode).Select(x => x.APILoginBody).FirstOrDefault(); apiloginbody = (apiloginbody == null ? "" : apiloginbody);
+            var apiuser = "";
+            var apipwd = "";
+            var apiloginurl = "";
+            var apiloginbody = "";
             string ret = (!apiloginurl.ToLower().Contains("b1s/v1")) ? sapAces.APIResponse(apimethod, apiurl, "", "", "", apiuser, apipwd, 1)
                                     : (sapAces.XmlPostJson("POST", apiloginurl, $"{apiloginbody}")).ToLower().Contains("error") ? "" : sapAces.XmlPostJson(apimethod, apiurl, "");
             if (!string.IsNullOrEmpty(ret)) 

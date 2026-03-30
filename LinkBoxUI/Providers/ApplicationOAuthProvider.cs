@@ -31,7 +31,7 @@ namespace LinkBoxUI.Providers
         {
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            Context.LinkboxDb.ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            Context.ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
 
             if (user == null)
             {

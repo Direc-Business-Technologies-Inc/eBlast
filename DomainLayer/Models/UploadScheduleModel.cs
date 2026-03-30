@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainLayer
 {
-    public partial class UploadSchedule
+    public class UploadSchedule
     {
         [Key]
         public int SchedId { get; set; }
@@ -23,6 +23,7 @@ namespace DomainLayer
         public DateTime? StartTime { get; set; }
 
         public string ScheduleType { get; set; }
+
         public bool IsActive { get; set; }
 
         public DateTime? CreateDate { get; set; }
@@ -30,9 +31,11 @@ namespace DomainLayer
         public int CreateUserID { get; set; }
 
         public DateTime? UpdateDate { get; set; }
-        public int? UpdateUserID { get; set; }
-        public string Api { get; set; }
-        public string Credential { get; set; }
 
+        public int? UpdateUserID { get; set; }
+
+        public string Api { get; set; }
+
+        public string Credential { get; set; }
     }
 }

@@ -5,12 +5,11 @@ using System.Data.Entity.Validation;
 namespace DomainLayer
 {
 
-    public partial class EmailLogs
+    public class EmailLogs
     {
         [Key]
         public int EmailId { get; set; }
 
-        
         [StringLength(30)]
         public string EmailCode { get; set; }
 
@@ -54,6 +53,5 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-        
     }
 }

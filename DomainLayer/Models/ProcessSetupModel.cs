@@ -25,8 +25,9 @@ namespace DomainLayer
         public DateTime? UpdateDate { get; set; }
 
         public int? UpdateUserID { get; set; }
-        public bool PostSAP { get; set; }
-        public string APICode { get; set; }
 
+        public bool PostSAP { get; set; }
+
+        public string APICode { get; set; }
     }
 }

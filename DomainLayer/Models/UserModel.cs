@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DomainLayer
 {
-    public partial class User
+    public class User
     {
         [Key]
         public int UserId { get; set; }
 
         [StringLength(20)]
         public string UserName { get; set; }
+
         [StringLength(50)]
         public string LastName { get; set; }
 
@@ -27,17 +28,17 @@ namespace DomainLayer
         public int? Attempt { get; set; }
 
         public string LastPassword { get; set; }
-        
+
         public DateTime? LastLoginDate { get; set; }
-        
+
         public DateTime CreateDate { get; set; }
 
         public int CreateUserID { get; set; }
 
         public DateTime? UpdateDate { get; set; }
-        
-        public int? UpdateUserID { get; set; }
-        public int AuthorizationID { get; set; }
 
+        public int? UpdateUserID { get; set; }
+
+        public int AuthorizationID { get; set; }
     }
 }

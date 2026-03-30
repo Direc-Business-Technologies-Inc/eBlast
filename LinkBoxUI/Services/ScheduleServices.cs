@@ -78,7 +78,7 @@ namespace LinkBoxUI.Services
                                          new { API = a.APIURL }).FirstOrDefault();
             string url = api == null ? _context.APISetups.Where(x => x.APICode == schedule.Api).Select(x => x.APIURL).FirstOrDefault() : api.API;
             var apimapcode = _context.Process.Where(x => x.ProcessCode == schedule.Process).Join(_context.FieldMappings, p => p.MapId, f => f.MapId, (p, f) =>
-                                        new { APICode = f.APICode }).FirstOrDefault();
+                                        new { APICode = "" }).FirstOrDefault();
             ////IF FIELD MAPPING IS API THEN SET THE MAPID            
             if (apimapcode != null)
             {
@@ -123,7 +123,7 @@ namespace LinkBoxUI.Services
                                        new { API = a.APIURL }).FirstOrDefault();
             string url = api == null ? _context.APISetups.Where(x => x.APICode == sched.Api).Select(x => x.APIURL).FirstOrDefault() : api.API;
             var apimapcode = _context.Process.Where(x => x.ProcessCode == schedule.Process).Join(_context.FieldMappings, p => p.MapId, f => f.MapId, (p, f) =>
-                                        new { APICode = f.APICode }).FirstOrDefault();
+                                        new { APICode = "" }).FirstOrDefault();
             ////IF FIELD MAPPING IS API THEN SET THE MAPID
             if (apimapcode != null) 
             {

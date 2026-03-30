@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace DomainLayer
 {
 
-    public partial class AddonSetup
+    public class AddonSetup
     {
         [Key]
         public int AddonId { get; set; }
@@ -26,7 +26,7 @@ namespace DomainLayer
 
         public int? AddonPort { get; set; }
 
-        [StringLength(20)]  
+        [StringLength(20)]
         public string AddonDBuser { get; set; }
 
         [StringLength(50)]
@@ -35,12 +35,11 @@ namespace DomainLayer
         public bool IsActive { get; set; }
 
         public DateTime? CreateDate { get; set; }
-       
+
         public int CreateUserID { get; set; }
 
         public DateTime? UpdateDate { get; set; }
-        
-        public int? UpdateUserID { get; set; }
 
+        public int? UpdateUserID { get; set; }
     }
 }

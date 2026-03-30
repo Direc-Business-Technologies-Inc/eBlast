@@ -4,13 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainLayer
 {
-    public partial class Authorization
+    public class Authorization
     {
         [Key]
         public int AuthId { get; set; }
 
         [StringLength(20)]
         public string AuthCode { get; set; }
+
         [StringLength(50)]
         public string Description { get; set; }
 
