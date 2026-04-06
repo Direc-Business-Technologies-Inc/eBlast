@@ -195,18 +195,21 @@ namespace LinkBoxUI.Helpers
                         MailMessage mailMessage = new MailMessage();
                         mailMessage.From = new MailAddress(creds.EmailCreds.EmailFrom, creds.EmailCreds.EmailDesc);
                         mailMessage.To.Add(new MailAddress(item[string.Format("{0}", columns.Where((string x) => x.ToLower().Contains("mail")).FirstOrDefault())].ToString()));
-                        if (creds.CcTable != null && creds.CcTable.Rows.Count != 0)
+                        if (creds.CcTable != null && creds.CcTable.Rows.Count > 0)
                         {
                             try
                             {
-                                List<string> cccolumns = (from DataColumn x in creds.CcTable.Columns
-                                                          select x.ColumnName).ToList();
-                                List<DataRow> list = (from DataRow x in creds.CcTable.Rows
-                                                      where x[string.Format("{0}", cccolumns.Where((string y) => y.ToLower().Contains("to")).FirstOrDefault())].ToString() == item[string.Format("{0}", columns.Where((string y) => y.ToLower().Contains("mail")).FirstOrDefault())].ToString()
-                                                      select x).ToList();
-                                foreach (DataRow item3 in list)
+                                //string toColumn = creds.CcTable.Columns.Cast<DataColumn>()
+                                //    .Select(c => c.ColumnName)
+                                //    .FirstOrDefault(c => c.ToLower().Contains("to"));
+
+                                //string mailColumn = columns.FirstOrDefault(c => c.ToLower().Contains("mail"));
+
+                                var list = creds.CcTable.AsEnumerable().ToList();
+
+                                foreach (DataRow row in list)
                                 {
-                                    mailMessage.CC.Add(new MailAddress(item3[string.Format("{0}", cccolumns.Where((string x) => x.ToLower().Contains("cc")).FirstOrDefault())].ToString()));
+                                    mailMessage.CC.Add(new MailAddress(row["EmailCC"].ToString()));
                                 }
                             }
                             catch (Exception)
@@ -223,32 +226,10 @@ namespace LinkBoxUI.Helpers
                         }
                         string emailSubject = creds.EmailCreds.EmailSubject;
                         string body = creds.EmailCreds.Body;
-                        try
-                        {
-                            mailMessage.Subject = emailSubject.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
-                        }
-                        catch (Exception)
-                        {
-                            mailMessage.Subject = emailSubject;
-                        }
-                        try
-                        {
-                            mailMessage.Subject = mailMessage.Subject.Replace("#CUSTOMERNAME#", item["CardCode"].ToString());
-                        }
-                        catch (Exception)
-                        {
-                            mailMessage.Subject = mailMessage.Subject;
-                        }
-                        mailMessage.Body = body.Replace("#ATTACHMENT#", "");
-                        mailMessage.IsBodyHtml = true;
-                        try
-                        {
-                            mailMessage.Body = mailMessage.Body.Replace("#CUSTOMERNAME#", item["CardName"].ToString());
-                        }
-                        catch (Exception)
-                        {
-                            mailMessage.Body = mailMessage.Body;
-                        }
+
+                        mailMessage.Subject = ApplyPlaceholders(emailSubject, item);
+
+                        mailMessage.Body = ApplyPlaceholders(body, item);
                         try
                         {
                             if (body.Contains("QUERY"))
@@ -331,6 +312,30 @@ namespace LinkBoxUI.Helpers
             {
                 return ex.ToString();
             }
+        }
+
+        string GetItemValue(DataRow row, string column, string fallback = "")
+        {
+            return row.Table.Columns.Contains(column) && row[column] != DBNull.Value
+                ? row[column].ToString()
+                : fallback;
+        }
+
+        string ApplyPlaceholders(string template, DataRow item)
+        {
+            var placeholders = new Dictionary<string, string>
+            {
+                { "#CUSTOMERNAME#", GetItemValue(item, "CardName") },
+                { "#SCSONO#",       GetItemValue(item, "SCSONO") },
+                { "#SINO#",         GetItemValue(item, "SINO") },
+
+                { "#ATTACHMENT#",         GetItemValue(item, "") },
+            };
+
+            foreach (var kv in placeholders)
+                template = template.Replace(kv.Key, kv.Value);
+
+            return template;
         }
 
         public AlternateView GetEmbeddedImage(String filePath, string body)
